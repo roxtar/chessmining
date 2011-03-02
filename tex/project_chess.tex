@@ -1,0 +1,66 @@
+\documentclass{article}
+\author{Rohit Kumar \\UCLA ID: 203884129}
+\title{Data Mining Chess Games \\ CS 249: Term Project, Winter 2011}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+\label{sec:Introduction}
+The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} maintains an extensive set of chess games in its database. The data set contains games from 1999 to 2011 and includes players of all kinds of ratings -- from the very beginner, to grand masters, to computers. Apart from the traditional chess games, people also play chess variants on the server. For example: suicide chess, losers, crazhouse etc. The data for each game is captured as a Portable Game Notation (PGN)\footnote{https://secure.wikimedia.org/wikipedia/en/wiki/Portable\_Game\_Notation} file and contains information regarding the moves played, the players names, their rating, time controls used and the result. \\
+
+As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers. This project aims at finding interesting patterns in the FICS chess data set.
+
+\section{PGN Parser}
+
+As mentioned in Section~\ref{sec:Introduction}, the games in the FICS
+database are stored in the PGN file format. PGN is a standard way for
+storing chess games. It was designed for ease of viewing of chess
+games and not for querying 
+\footnote{http://web.archive.org/web/20080728070648/http://www.very-best.de/pgn-spec.htm}. Thus to extract meaningful information out of the database, the PGN files need to be parsed.
+
+PGN is a text based format and looks in some ways similar to the Windows INI file format. An example file, is shown in Figure~\ref{fig:pgn}
+
+\begin{figure}[tph]
+\begin{verbatim}
+[Event "FICS rated blitz game"]
+[Site "FICS"]
+[FICSGamesDBGameNo "273548609"]
+[White "tirsa"]
+[Black "EyeLikePie"]
+[WhiteElo "1015"]
+[BlackElo "1083"]
+[TimeControl "180+0"]
+[Date "2011.03.01"]
+[Time "18:00:00"]
+[WhiteClock "0:03:00.000"]
+[BlackClock "0:03:00.000"]
+[ECO "C57"]
+[PlyCount "33"]
+[Result "1-0"]
+
+
+1. e4 {[%emt 0.0]} e5 {[%emt 0.0]} 
+2. Nf3 {[%emt 0.57]} Nc6 {[%emt 0.39]} 
+3. Bc4 {[%emt 0.692]} Nf6 {[%emt 2.781]} 
+4. Ng5 {[%emt 1.812]} d5 {[%emt 7.405]} 
+5. exd5 {[%emt 1.79]} Nxd5 {[%emt 0.859]} 
+6. Qf3 {[%emt 6.995]} Qxg5 {[%emt 11.124]} 
+7. Bxd5 {[%emt 2.384]} f6 {[%emt 14.233]} 
+8. Bxc6+ {[%emt 3.291]} bxc6 {[%emt 1.796]} 
+9. d3 {[%emt 1.242]} Bb4+ {[%emt 1.719]} 
+10. Nc3 {[%emt 3.945]} Bxc3+ {[%emt 4.969]} 
+11. bxc3 {[%emt 1.391]} Qg6 {[%emt 4.593]} 
+12. O-O {[%emt 5.834]} Bg4 {[%emt 0.672]} 
+13. Qxc6+ {[%emt 4.156]} Kf7 {[%emt 3.172]} 
+14. Qxc7+ {[%emt 0.899]} Ke6 {[%emt 2.343]} 
+15. Qc4+ {[%emt 1.71]} Kf5 {[%emt 4.203]} 
+16. f3 {[%emt 0.733]} Bxf3 {[%emt 1.828]} 
+17. Rxf3# {[%emt 3.97]} {Black checkmated} 1-0
+
+\end{verbatim}
+
+\caption{Example PGN File.}
+\label{fig:pgn}
+\end{figure}
+
+\end{document}
