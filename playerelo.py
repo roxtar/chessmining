@@ -8,3 +8,4 @@ for f in sys.argv:
     for game in p.db.games:
         print game.tags["White"] + "," + game.tags["WhiteElo"]
         print game.tags["Black"] + "," + game.tags["BlackElo"]
+
