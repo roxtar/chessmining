@@ -13,4 +13,11 @@ up. Using perl and command line.
 
 Even then the information is not in CSV or any other palatable format.
 
-Some computers haven't even played rated games, because they are still being experiemented upon. These computers were ignored.
+Some computers haven't even played rated games, because they are still
+being experiemented upon. These computers were ignored.
+
+get_rating.sh should be run on the finger_clean.txt file.
+
+Only 191 active computers on FICS although site claims more.
+
+mscp is the highest playing computer by far. 
