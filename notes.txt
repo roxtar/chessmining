@@ -1,0 +1,7 @@
+1. Move count for players with below average rating.
+2. Average move count according to time control
+3. Mine user list
+4. Mine computer list
+5. Computer rating.
+6. Is there any scope for classifiers?
+

@@ -720,7 +720,7 @@ searcherFICS(C)
 Blitz      2464     22.8    1916     588    1070    3574   2546 (12-Feb-2011) 
 Standard   2403     90.2      19      11      16      46   2506 (31-Oct-2010) 
 
-SelfKiller(C) 
+
 
 Shredder 
 Blitz      2640    163.1      14       3       5      22 

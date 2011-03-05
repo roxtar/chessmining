@@ -1,0 +1,16 @@
+Can't get ratings details directly from FICS
+
+Details available only for human viewing on website
+
+Manually retrieved computer list from FICS website by doing "help computer_list"
+
+Ran a finger on each one of the computer accounts, by running curl on
+the FICSgames website.
+
+
+Finger of each can have details like author comments, had to clean it
+up. Using perl and command line.
+
+Even then the information is not in CSV or any other palatable format.
+
+Some computers haven't even played rated games, because they are still being experiemented upon. These computers were ignored.
