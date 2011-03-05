@@ -1,4 +1,4 @@
-games <- read.csv("playerelo_mar_01_2011_blitz.csv", header=T)
+games <- read.csv("playerelo_feb_27_2011_blitz.csv", header=T)
 summary(games$Elo)
 players <- table(games$Player)
 hist(players, breaks=3)

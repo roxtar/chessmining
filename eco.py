@@ -10,3 +10,5 @@ for f in sys.argv:
             print game.tags["WhiteElo"] + "," + game.tags["BlackElo"] + "," + game.tags["ECO"];
 
 
+
+
