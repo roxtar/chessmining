@@ -1,4 +1,4 @@
-humans.table <- read.csv("humans_blitz.csv", header=T)
+humans.table <- read.csv("humans_blitz_rating.csv", header=T)
 hist(humans.table$BlitzRating, breaks=20)
 readline("Hit <enter> to see next plot");
 hist(humans.table$BlitzRD)
