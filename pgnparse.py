@@ -1,3 +1,4 @@
+import re
 class PgnParser:
     def __init__(self):
         self.db = PgnDatabase()
@@ -23,16 +24,7 @@ class PgnParser:
 
         # empty line
         if(len(line) == 0):
-            return
-
-        # comment
-        if(line.startswith(';')):
-            return
-        
-        if(line.startswith('{')):
-            line = self.remove_comment(line, line_num)
-            self.parse_line(line, line_num)
-            return
+            return        
 
 
         # tag pair
@@ -46,12 +38,9 @@ class PgnParser:
             return
 
         # move text
-        if(line.startswith('1.')):
+        if(re.match(r"^\d+\.", line) != None):            
             self.parse_move_text(line, line_num)
-            return
-        
-
-        
+            return               
     
     def parse_tag(self, line, line_num):
         (sym, val) = self.get_tag(line, line_num)
@@ -61,7 +50,6 @@ class PgnParser:
         
         self.db.current_game.add_tag(sym, val)
             
-
                    
     def get_tag(self, line, line_num):
         # assumes PGN export style tag pairs
@@ -80,16 +68,20 @@ class PgnParser:
         
         return (sym, val)
         
-    def parse_move_text(self, line, line_num):
-        # Don't worry about the move text right now
-        pass
+    def parse_move_text(self, line, line_num):                
         if(len(line) == 0):
             return
-        idx = line.find('.')
-        if(idx == -1):
-            raise ParseError("Illegal move line ({0}). Line: {1}".format(line, line_num))
-        move_num = int(line[:idx])
-        idx = idx + 1        
+        import re
+        rexp = r"\d+\. (\S+)\s+(.+)"
+        m = re.search(rexp, line);
+        if(m != None):
+            grpslen = len(m.groups())
+            if(grpslen > 0):
+                white_move = m.group(1)
+                black_move = m.group(2)
+                self.db.current_game.add_move((white_move.strip(), black_move.strip()))
+            else:
+                pass
     
         
     def remove_comment(self, line, line_num):
@@ -142,7 +134,10 @@ class PgnDatabase:
 class PgnGame:
     def __init__(self):
         self.tags = dict()
-        pass
+        self.white_moves = list()
+        self.black_moves = list()
+        self.moves = list()
+
     def add_tag(self, sym, val):
         self.tags[sym] = val
     
@@ -150,3 +145,6 @@ class PgnGame:
         if(len(self.tags) > 0):
             for sym in self.tags.keys():
                 print("{0}:{1}".format(sym, self.tags[sym]))
+                
+    def add_move(self, move):
+        self.moves.append(move)

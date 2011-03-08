@@ -5,3 +5,11 @@
 5. Computer rating.
 6. Is there any scope for classifiers?
 
+Checked out arules package. 
+
+Required R 2.11 or above. 
+
+Had to upgrade R in Ubuntu. Not too difficult. Had to follow
+instructions given at:
+
+http://cran.r-project.org/bin/linux/ubuntu/README

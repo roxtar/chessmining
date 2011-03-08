@@ -66,5 +66,48 @@ PGN is a text based format and looks in some ways similar to the Windows INI fil
 \label{fig:pgn}
 \end{figure}
 
+Each PGN file can have details regarding more than one game. A game contains some meta information like the player information, their ratings, the time controls used, which is followed by the actual moves played by the players.\\
 
+The meta information is stored as key-value players and are the fields enclosed within '[' and ']' in Figure ~\ref{fig:pgn}. The moves come after that and are prefixed with numbers. The white player's move is listed first, followed by black. The moves are denoted using the Standard Algebraic Notation \footnote{https://secure.wikimedia.org/wikipedia/en/wiki/Algebraic\_chess\_notation}. \\
+
+The PGN parser extracts both the meta information and the moves from the PGN file. The contents of the entire PGN file is stored within a \verb=PgnDatabase= class. The \verb=PgnDatabase= class contains a list of \verb=PgnGame= instances.
+
+\section{Player Statistics}
+The PGN database only gives details regarding individual games played on the FICS server. It doesn't give us individual player statistics. These were gathered by executing using a command on the FICS server called \verb=finger=. 
+
+The \verb=finger= command lists a player's details such as, their rating, number of games played, won, lost, etc. An example output of running the command \verb="finger roxtar"= on the FICS server is shown in Figure ~\ref{fig:finger}
+
+\begin{figure}[tph]
+\begin{verbatim}
+>finger roxtar
+
+Finger of roxtar:
+
+On for: 29 mins   Idle: 0 secs
+
+          rating     RD      win    loss    draw   total   best
+Blitz      1044     34.2     670     693      30    1393   1161 (04-Apr-2008)
+Standard   1178    350.0       3       5       0       8
+Lightning  1004    289.5       5      10       0      15
+Bughouse   1323    350.0       2       4       0       6
+Crazyhouse 1388    166.7      16      26       0      42   1272 (27-Feb-2005)
+Suicide    1705    173.5     152     222       6     380   1654 (08-Dec-2004)
+Losers     1877    350.0       7       6       0      13
+
+
+Timeseal 1 : On
+
+ 1: I prefer 2 12 or 10 0.
+ 2: No takebacks asked or given.
+ 3: The variants which I like to play include suicide and crazyhouse.
+\end{verbatim}
+\caption{Example Finger Output}
+\label{fig:finger}
+\end{figure}
+
+To execute the \verb=finger= command on the server a Perl script was written, which would telnet to the FICS server, run the command and return the output \footnote{The finger command can also be executed from the FICS website. In fact the initial method to obtain player statistics used the website. A script would repeatedly query the website for the statistics. This method though generated a lot of requests for the web server and server administrators blocked the author's IP address from accessing the web page.}  The output was then filtered to obtain the player statistics in CSV format. \\
+
+The FICS website or server doesn't provide a means to extract a list of all user names in the system.
+
+\section{Exploring Ratings}
 \end{document}

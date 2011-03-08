@@ -12,3 +12,5 @@ view:
 
 clean:
 	rm -f *.log *.aux *.pdf
+
+.PHONY: clean 
