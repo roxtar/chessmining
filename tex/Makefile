@@ -1,10 +1,12 @@
 OUTPUT = project_chess.pdf
-
+INPUT = project_chess
 all: $(OUTPUT)
 
-%.pdf: %.tex
-	pdflatex $<
-	pdflatex $<
+%.pdf: $(INPUT).tex $(INPUT).bib
+	pdflatex $(INPUT)
+	bibtex $(INPUT)
+	pdflatex $(INPUT)
+	pdflatex $(INPUT)
 
 
 view:

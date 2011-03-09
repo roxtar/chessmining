@@ -1,7 +1,6 @@
-humans.table <- read.csv("humans_blitz_rating.csv", header=T)
-hist(humans.table$BlitzRating, breaks=20)
 readline("Hit <enter> to see next plot");
 hist(humans.table$BlitzRD)
+
 readline("Hit <enter> to see next plot");
 hist(humans.table$BlitzTotal[humans.table$BlitzTotal < 20000])
 i <- which(humans.table$BlitzTotal == max(humans.table$BlitzTotal, na.rm=T))

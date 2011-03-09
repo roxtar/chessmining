@@ -1,29 +1,31 @@
 \documentclass{article}
-
+\usepackage[pdftex]{graphicx}
+\usepackage{url}
 \author{Rohit Kumar \\UCLA ID: 203884129}
 \title{Data Mining Chess Games \\ CS 249: Term Project, Winter 2011}
 \begin{document}
+
 
 \maketitle
 
 
 \section{Introduction}
-\label{sec:Introduction}
-The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} maintains an extensive set of chess games in its database. The data set contains games from 1999 to 2011 and includes players of all kinds of ratings -- from the very beginner, to grand masters, to computers. Apart from the traditional chess games, people also play chess variants on the server. For example: suicide chess, losers, crazhouse etc. The data for each game is captured as a Portable Game Notation (PGN)\footnote{https://secure.wikimedia.org/wikipedia/en/wiki/Portable\_Game\_Notation} file and contains information regarding the moves played, the players names, their rating, time controls used and the result. \\
+\label{sec:intro}
+The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} maintains an extensive set of chess games in its database. The data set contains games from 1999 to 2011 and includes players of all kinds of ratings -- from the very beginner, to grand masters, to computers. Apart from the traditional chess games, people also play chess variants on the server. For example: suicide chess, losers, crazhouse etc. The data for each game is captured as a Portable Game Notation (PGN) \cite{wiki:pgn} file and contains information regarding the moves played, the players names, their rating, time controls used and the result. \\
 
 As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers. This project aims at finding interesting patterns in the FICS chess data set.
 
 \section{PGN Parser}
 
-As mentioned in Section~\ref{sec:Introduction}, the games in the FICS
+As mentioned in Section~\ref{sec:intro}, the games in the FICS
 database are stored in the PGN file format. PGN is a standard way for
 storing chess games. It was designed for ease of viewing of chess
-games and not for querying 
-\footnote{http://web.archive.org/web/20080728070648/http://www.very-best.de/pgn-spec.htm}. Thus to extract meaningful information out of the database, the PGN files need to be parsed.
+games and not for querying ~\cite{spec:pgn}. Thus to extract meaningful information out of the database, the PGN files need to be parsed.
 
 PGN is a text based format and looks in some ways similar to the Windows INI file format. An example file, is shown in Figure~\ref{fig:pgn}
 
 \begin{figure}[tph]
+\begin{center}
 \begin{verbatim}
 [Event "FICS rated blitz game"]
 [Site "FICS"]
@@ -61,18 +63,19 @@ PGN is a text based format and looks in some ways similar to the Windows INI fil
 17. Rxf3# {[%emt 3.97]} {Black checkmated} 1-0
 
 \end{verbatim}
-
+\end{center}
 \caption{Example PGN File.}
 \label{fig:pgn}
 \end{figure}
 
 Each PGN file can have details regarding more than one game. A game contains some meta information like the player information, their ratings, the time controls used, which is followed by the actual moves played by the players.\\
 
-The meta information is stored as key-value players and are the fields enclosed within '[' and ']' in Figure ~\ref{fig:pgn}. The moves come after that and are prefixed with numbers. The white player's move is listed first, followed by black. The moves are denoted using the Standard Algebraic Notation \footnote{https://secure.wikimedia.org/wikipedia/en/wiki/Algebraic\_chess\_notation}. \\
+The meta information is stored as key-value players and are the fields enclosed within '[' and ']' in Figure ~\ref{fig:pgn}. The moves come after that and are prefixed with numbers. The white player's move is listed first, followed by black. The moves are denoted using the Standard Algebraic Chess Notation ~\cite{wiki:san}. \\
 
 The PGN parser extracts both the meta information and the moves from the PGN file. The contents of the entire PGN file is stored within a \verb=PgnDatabase= class. The \verb=PgnDatabase= class contains a list of \verb=PgnGame= instances.
 
 \section{Player Statistics}
+\label{sec:pstats}
 The PGN database only gives details regarding individual games played on the FICS server. It doesn't give us individual player statistics. These were gathered by executing using a command on the FICS server called \verb=finger=. 
 
 The \verb=finger= command lists a player's details such as, their rating, number of games played, won, lost, etc. An example output of running the command \verb="finger roxtar"= on the FICS server is shown in Figure ~\ref{fig:finger}
@@ -107,7 +110,23 @@ Timeseal 1 : On
 
 To execute the \verb=finger= command on the server a Perl script was written, which would telnet to the FICS server, run the command and return the output \footnote{The finger command can also be executed from the FICS website. In fact the initial method to obtain player statistics used the website. A script would repeatedly query the website for the statistics. This method though generated a lot of requests for the web server and server administrators blocked the author's IP address from accessing the web page.}  The output was then filtered to obtain the player statistics in CSV format. \\
 
-The FICS website or server doesn't provide a means to extract a list of all user names in the system.
+The FICS website or server doesn't provide a means to extract a list of all user names in the system. So instead, a PGN file containing 5000 games was downloaded for each month between March 2010 to March 2011 and the statistics for all users who participated in those games was extracted. 
 
 \section{Exploring Ratings}
+The FICS server has got a rating system based on the Glicko system ~\cite{spec:glicko}. Each player has a rating which is a number which usually ranges between 600-3000. The higher the rating, the better the player. The Glicko rating system has another factor called \textsl{Ratings Deviation(RD)}, which measures the accuracy of the rating. The lower the Ratings Deviation (RD), the more accurate is the rating of the player.\\
+
+To explore the ratings of the players on FICS, the finger statistics were downloaded and transformed into a CSV format as described in section ~\ref{sec:pstats}. This was done separately for human players and computer programs. On plotting the histogram of the human ratings, we observe that the ratings have normal distribution (Figure \ref{fig:humanrating})
+
+\begin{figure} [tph]
+\begin{center}
+\includegraphics[width=3in]{humans_rating.png}
+\end{center}
+\caption{Distribution of Human Players' Rating}
+\label{fig:humanrating}
+\end{figure}
+
+\pagebreak
+\bibliography{project_chess}
+\bibliographystyle{plain}
+
 \end{document}
