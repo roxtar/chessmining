@@ -28,9 +28,3 @@ plotRatingHist(computers.table$BlitzRating, "Computers Rating")
 
 print(percHigher(humans.table$BlitzRating, 2000))
 print(percHigher(computers.table$BlitzRating, 2000))
-
-      
-
-
-
-

@@ -1,17 +1,15 @@
-readline("Hit <enter> to see next plot");
-hist(humans.table$BlitzRD)
-
-readline("Hit <enter> to see next plot");
-hist(humans.table$BlitzTotal[humans.table$BlitzTotal < 20000])
-i <- which(humans.table$BlitzTotal == max(humans.table$BlitzTotal, na.rm=T))
-print(humans.table[i,])
-select <- humans.table$BlitzRD < 200
-humans <- humans.table[select, ]
 source("PCAplot.R")
+humans.table <- read.csv("../humans/humans_blitz_rating.csv", header=T)
+computers.table <- read.csv("../computers/computers_blitz_rating.csv", header=T)
+
+select <- sample(humans.table$BlitzRD < 200, 100)
+humans <- humans.table[select, ]
+humans <- na.exclude(humans)
 
 xcolors <- ifelse(humans$BlitzRating > 1500, "red", "gray")
 xnames <- rep("", nrow(humans))
-PCAplot(humans.table[, 2:6], xnames, xcolors)
-readline("Hit <enter> to see next plot");
+#PCAplot(humans[, 2:6], xnames, xcolors)
+#readline("Hit <enter> to see next plot");
+humans <- humans[humans$BlitzRD < 60, ]
 plot(humans$BlitzRating ~ humans$BlitzRD, col=xcolors, pch=20)
 

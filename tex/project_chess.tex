@@ -143,7 +143,6 @@ The list of computers operating on the FICS server was available readily. The sa
 
 A related statistic is the number of games a particular user has played. One could conjecture that human players would have played lesser number of games as compared to the computers on the server. The totals for the blitz games played, were plotted for humans and computers (Figure ~\ref{fig:gametotals}). The computer which has played the highest number of blitz games is {\sl mscp(C)} and the human is a user named {\sl gianti}. What's surprising is that {\sl mscp(C)} has played over 1 million games, which is 10 times the number of games which {\sl gianti} has played.\\
 
-Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals.
 
 \begin{figure} [tph]
 \begin{center}
@@ -152,6 +151,25 @@ Another thing which can be noticed is that most computers have totals below 200,
 \caption{Blitz Game Totals for Humans and Computers}
 \label{fig:gametotals}
 \end{figure}
+
+Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals. We find that the distribution for humans follows a power law (Figure ~\ref{fig:humanstotal}). The distribution for the computers though is not as beautiful (Figure ~\ref{fig:compstotal}).
+
+\begin{figure} [tph]
+\begin{center}
+\includegraphics[width=3in]{humans_total.png}
+\end{center}
+\caption{The Distribution of Total for Humans follows a Power Law}
+\label{fig:humanstotal}
+\end{figure}
+
+\begin{figure} [tph]
+\begin{center}
+\includegraphics[width=3in]{computers_total.png}
+\end{center}
+\caption{The Distribution of Total for Computers}
+\label{fig:compstotal}
+\end{figure}
+
 
 
 \pagebreak
