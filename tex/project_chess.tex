@@ -76,7 +76,7 @@ The PGN parser extracts both the meta information and the moves from the PGN fil
 
 \section{Player Statistics}
 \label{sec:pstats}
-The PGN database only gives details regarding individual games played on the FICS server. It doesn't give us individual player statistics. These were gathered by executing using a command on the FICS server called \verb=finger=. 
+The PGN database only gives details regarding individual games played on the FICS server. It doesn't give us individual player statistics. These were gathered by executing a command on the FICS server called \verb=finger=. 
 
 The \verb=finger= command lists a player's details such as, their rating, number of games played, won, lost, etc. An example output of running the command \verb="finger roxtar"= on the FICS server is shown in Figure ~\ref{fig:finger}
 
@@ -108,14 +108,18 @@ Timeseal 1 : On
 \label{fig:finger}
 \end{figure}
 
+\pagebreak
+
 To execute the \verb=finger= command on the server a Perl script was written, which would telnet to the FICS server, run the command and return the output \footnote{The finger command can also be executed from the FICS website. In fact the initial method to obtain player statistics used the website. A script would repeatedly query the website for the statistics. This method though generated a lot of requests for the web server and server administrators blocked the author's IP address from accessing the web page.}  The output was then filtered to obtain the player statistics in CSV format. \\
 
 The FICS website or server doesn't provide a means to extract a list of all user names in the system. So instead, a PGN file containing 5000 games was downloaded for each month between March 2010 to March 2011 and the statistics for all users who participated in those games was extracted. 
 
 \section{Exploring Ratings}
-The FICS server has got a rating system based on the Glicko system ~\cite{spec:glicko}. Each player has a rating which is a number which usually ranges between 600-3000. The higher the rating, the better the player. The Glicko rating system has another factor called \textsl{Ratings Deviation(RD)}, which measures the accuracy of the rating. The lower the Ratings Deviation (RD), the more accurate is the rating of the player.\\
+The FICS server has got a rating system based on the Glicko system ~\cite{spec:glicko}. Each player has a rating which is a number ranging between 600-3000. The higher the rating, the better the player. The Glicko rating system has another factor called \textsl{Ratings Deviation(RD)}, which measures the accuracy of the rating. The lower the Ratings Deviation (RD), the more accurate is the rating of the player.\\
 
-To explore the ratings of the players on FICS, the finger statistics were downloaded and transformed into a CSV format as described in section ~\ref{sec:pstats}. This was done separately for human players and computer programs. On plotting the histogram of the human ratings, we observe that the ratings have normal distribution (Figure \ref{fig:humanrating})
+In addition to this, the FICS server allows to users to play at a pace of their own choice. This leads to three varieties of time controls in regular chess: lightning, blitz and standard. Lighting being the fastest, with games finishing in under 6 minutes total, and standard being the slowest. For each of these different time controls, the user has different ratings, i.e a user's blitz rating will not be influenced by any of the lightning games which she plays and vice-versa.Time controls which fall under the blitz category are the most popular.\\
+
+To explore the ratings of the players on FICS, the finger statistics were downloaded and transformed into a CSV format as described in section ~\ref{sec:pstats}. This was done separately for human players and computer programs. On plotting the histogram of the human ratings, for blitz games, we observe that the ratings have normal distribution (Figure \ref{fig:humanrating}). With the mean $\bar{x}_{hr} = 1339.560$ and standard deviation $\sigma_{hr} = 293.12$\footnote{The author's own rating is below average at 1084}.\\
 
 \begin{figure} [tph]
 \begin{center}
@@ -124,6 +128,31 @@ To explore the ratings of the players on FICS, the finger statistics were downlo
 \caption{Distribution of Human Players' Rating}
 \label{fig:humanrating}
 \end{figure}
+
+
+The list of computers operating on the FICS server was available readily. The same procedure was applied to obtain their statistics. The computer blitz ratings histogram differ significantly from the human ratings. We see in Figure \ref{fig:comprating} that the computer ratings do not seem to follow a normal distribution. Most computers are rated higher than 2000. To compare this against humans, $79.6\%$ of computers are rated above 2000, whereas only $1.44\%$ of humans cross that level. The mean rating for computers is $\bar{x}_{cr} = 2254.479$ with standard deviation $\sigma_{cr} = 426.53$. One thing to note though is that the number of active computer players is far less than human players.\\
+
+
+\begin{figure} [tph]
+\begin{center}
+\includegraphics[width=3in]{computers_rating.png}
+\end{center}
+\caption{Distribution of Computers' Rating}
+\label{fig:comprating}
+\end{figure}
+
+A related statistic is the number of games a particular user has played. One could conjecture that human players would have played lesser number of games as compared to the computers on the server. The totals for the blitz games played, were plotted for humans and computers (Figure ~\ref{fig:gametotals}). The computer which has played the highest number of blitz games is {\sl mscp(C)} and the human is a user named {\sl gianti}. What's surprising is that {\sl mscp(C)} has played over 1 million games, which is 10 times the number of games which {\sl gianti} has played.\\
+
+Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals.
+
+\begin{figure} [tph]
+\begin{center}
+\includegraphics[width=3in]{game_totals.png}
+\end{center}
+\caption{Blitz Game Totals for Humans and Computers}
+\label{fig:gametotals}
+\end{figure}
+
 
 \pagebreak
 \bibliography{project_chess}
