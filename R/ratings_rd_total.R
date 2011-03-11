@@ -6,6 +6,8 @@ humans <- humans[humans$BlitzRD < 60, ]
 xcolors <- ifelse(humans$BlitzRating > 1500, "red", "gray")
 
 plot(humans$BlitzRating ~ humans$BlitzRD, col=xcolors, pch=20, ylab="Blitz Rating", xlab="Blitz RD")
+legend("topleft", pch=c(20,20), col=c("red", "gray"), legend=c("Rating > 1500", "Rating < 1500"), cex=0.8)
 plot(humans$BlitzRating ~ humans$BlitzTotal, col=xcolors, pch=20, ylab="Blitz Rating", xlab="Blitz Total")
+legend("topright", pch=c(20,20), col=c("red", "gray"), legend=c("Rating > 1500", "Rating < 1500"), cex=0.8)
 
 

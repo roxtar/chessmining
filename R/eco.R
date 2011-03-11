@@ -1,7 +1,7 @@
-eco <- read.csv("all_humans_eco.csv", header=T)
+eco <- read.csv("../humans/humans_eco.csv", header=T)
 eco.table <- table(eco$ECO)
 eco.table <- sort(eco.table, decreasing=T)
-barplot(eco.table[1:20], col=rainbow(20), cex.names=0.5)
+barplot(eco.table[1:20], col="gray", cex.names=1, ylab="Frequency", xlab="ECO")
 readline("Hit <Enter> to see the next plot")
 
 elo.mean <- (mean(eco$WhiteElo) + mean(eco$BlackElo))/2

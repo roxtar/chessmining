@@ -13,3 +13,6 @@ Had to upgrade R in Ubuntu. Not too difficult. Had to follow
 instructions given at:
 
 http://cran.r-project.org/bin/linux/ubuntu/README
+
+Inemuri black
+rules <- apriori(trans, parameter = list(sup=0.039, conf = 0.5, target="rules", minlen=2))

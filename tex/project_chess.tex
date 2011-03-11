@@ -1,4 +1,5 @@
 \documentclass{article}
+
 \usepackage[pdftex]{graphicx}
 \usepackage{url}
 \author{Rohit Kumar \\UCLA ID: 203884129}
@@ -24,7 +25,7 @@ games and not for querying ~\cite{spec:pgn}. Thus to extract meaningful informat
 
 PGN is a text based format and looks in some ways similar to the Windows INI file format. An example file, is shown in Figure~\ref{fig:pgn}
 
-\begin{figure}[tph]
+\begin{figure}[htp]
 \begin{center}
 \begin{verbatim}
 [Event "FICS rated blitz game"]
@@ -80,7 +81,7 @@ The PGN database only gives details regarding individual games played on the FIC
 
 The \verb=finger= command lists a player's details such as, their rating, number of games played, won, lost, etc. An example output of running the command \verb="finger roxtar"= on the FICS server is shown in Figure ~\ref{fig:finger}
 
-\begin{figure}[tph]
+\begin{figure}[htp]
 \begin{verbatim}
 >finger roxtar
 
@@ -119,9 +120,7 @@ The FICS server has got a rating system based on the Glicko system ~\cite{spec:g
 
 In addition to this, the FICS server allows to users to play at a pace of their own choice. This leads to three varieties of time controls in regular chess: lightning, blitz and standard. Lighting being the fastest, with games finishing in under 6 minutes total, and standard being the slowest. For each of these different time controls, the user has different ratings, i.e a user's blitz rating will not be influenced by any of the lightning games which she plays and vice-versa.Time controls which fall under the blitz category are the most popular.\\
 
-To explore the ratings of the players on FICS, the finger statistics were downloaded and transformed into a CSV format as described in section ~\ref{sec:pstats}. This was done separately for human players and computer programs. On plotting the histogram of the human ratings, for blitz games, we observe that the ratings have normal distribution (Figure \ref{fig:humanrating}). With the mean $\bar{x}_{hr} = 1339.560$ and standard deviation $\sigma_{hr} = 293.12$\footnote{The author's own rating is below average at 1084}.\\
-
-\begin{figure} [tph]
+\begin{figure} [htp]
 \begin{center}
 \includegraphics[width=3in]{humans_rating.png}
 \end{center}
@@ -130,10 +129,9 @@ To explore the ratings of the players on FICS, the finger statistics were downlo
 \end{figure}
 
 
-The list of computers operating on the FICS server was available readily. The same procedure was applied to obtain their statistics. The computer blitz ratings histogram differ significantly from the human ratings. We see in Figure \ref{fig:comprating} that the computer ratings do not seem to follow a normal distribution. Most computers are rated higher than 2000. To compare this against humans, $79.6\%$ of computers are rated above 2000, whereas only $1.44\%$ of humans cross that level. The mean rating for computers is $\bar{x}_{cr} = 2254.479$ with standard deviation $\sigma_{cr} = 426.53$. One thing to note though is that the number of active computer players is far less than human players.\\
+To explore the ratings of the players on FICS, the finger statistics were downloaded and transformed into a CSV format as described in section ~\ref{sec:pstats}. This was done separately for human players and computer programs. On plotting the histogram of the human ratings, for blitz games, we observe that the ratings have normal distribution (Figure \ref{fig:humanrating}). With the mean $\bar{x}_{hr} = 1339.560$ and standard deviation $\sigma_{hr} = 293.12$\footnote{The author's own rating is below average at 1084}.\\
 
-
-\begin{figure} [tph]
+\begin{figure} [htp]
 \begin{center}
 \includegraphics[width=3in]{computers_rating.png}
 \end{center}
@@ -141,10 +139,19 @@ The list of computers operating on the FICS server was available readily. The sa
 \label{fig:comprating}
 \end{figure}
 
+
+The computer accounts which are present on the FICS server run chess programs. These programs are either commercially available programs like Fritz~\cite{web:fritz}, or are open source, like Crafty~\cite{web:crafty} or mscp~\cite{web:mscp}. Apart from the kind of program running, the computers running them differ in hardware. The hardware's capabilities also influence the chess program's strength. With faster hardware we would expect the program to be able to search deeper in the tree. Due to these two factors, namely difference in programs and difference in hardware, we would expect to see some variance in the ratings of the computers. At the same time, as these programs are playing against regular human beings (and not grand masters) we expect that their mean rating will be higher than that of humans. \\
+
+The list of computers operating on the FICS server was available readily. The same procedure was applied to obtain their statistics. The computer blitz ratings histogram differ significantly from the human ratings. We see in Figure \ref{fig:comprating} that the computer ratings do not seem to follow a normal distribution. Most computers are rated higher than 2000. To compare this against humans, $79.6\%$ of computers are rated above 2000, whereas only $1.44\%$ of humans cross that level. The mean rating for computers is $\bar{x}_{cr} = 2254.479$ with standard deviation $\sigma_{cr} = 426.53$. One thing to note though is that the number of active computer players is far less than human players.\\
+
+
+
+\section{Game Totals}
+
 A related statistic is the number of games a particular user has played. One could conjecture that human players would have played lesser number of games as compared to the computers on the server. The totals for the blitz games played, were plotted for humans and computers (Figure ~\ref{fig:gametotals}). The computer which has played the highest number of blitz games is {\sl mscp(C)} and the human is a user named {\sl gianti}. What's surprising is that {\sl mscp(C)} has played over 1 million games, which is 10 times the number of games which {\sl gianti} has played.\\
 
 
-\begin{figure} [tph]
+\begin{figure} [htp]
 \begin{center}
 \includegraphics[width=3in]{game_totals.png}
 \end{center}
@@ -152,9 +159,20 @@ A related statistic is the number of games a particular user has played. One cou
 \label{fig:gametotals}
 \end{figure}
 
-Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals. We find that the distribution for humans follows a power law (Figure ~\ref{fig:humanstotal}). The distribution for the computers though is not as beautiful (Figure ~\ref{fig:compstotal}).
+One might postulate that a human player's rating is correlated to the number of games she has played. With the assumption that a player will learn and improve over time. This though is found to be not true. If we plot the player's rating against her ratings deviation (which is a measure of the how frequently a user plays games and the accuracy of her rating) and the total number of games played, we find that there is no such correlation (Figure ~\ref{fig:ratingsrdtotal}).\\
 
-\begin{figure} [tph]
+\begin{figure} [htp]
+\begin{center}
+\includegraphics[width=3in]{ratings_rd_total.png}
+\end{center}
+\caption{Blitz Game Totals for Humans and Computers}
+\label{fig:ratingsrdtotal}
+\end{figure}
+
+
+Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals. We find that the distribution for humans follows a power law (Figure ~\ref{fig:humanstotal}). The distribution for the computers though is not as beautiful (Figure ~\ref{fig:compstotal}).\\
+
+\begin{figure} [htp]
 \begin{center}
 \includegraphics[width=3in]{humans_total.png}
 \end{center}
@@ -162,7 +180,7 @@ Another thing which can be noticed is that most computers have totals below 200,
 \label{fig:humanstotal}
 \end{figure}
 
-\begin{figure} [tph]
+\begin{figure} [htp]
 \begin{center}
 \includegraphics[width=3in]{computers_total.png}
 \end{center}
@@ -170,6 +188,21 @@ Another thing which can be noticed is that most computers have totals below 200,
 \label{fig:compstotal}
 \end{figure}
 
+\clearpage
+\section{Opening Strategies}
+The initial moves played in a chess game constitute of what is known as the ``Opening'' of a game. There are various opening strategies each with its strength and weaknesses. Although the first move is played by White, the opening relies open Black's response.\\
+
+The standard way of categorizing chess openings is to use Encyclopaedia of Chess Openings or ECO codes. The ECO codes are categoriezed into five sub-divisions labeled from ``A'' to ``E''. Each sub-division in turn has 100 sub-categories ~\cite{wiki:eco}.\\
+
+In all of the games played on FICS, these ECO codes are recorded in the PGN files as a tag with key ``ECO''. This saves us the trouble of deciphering the ECO codes from the moves played. We can plot the frequency of the most popular openings as a barchart. This is shown in Figure ~\ref{fig:ecobar}.
+
+\begin{figure} [htp]
+\begin{center}
+\includegraphics[width=5in]{eco_bar.png}
+\end{center}
+\caption{Barplot Showing the 20 most popular Openings}
+\label{fig:ecobar}
+\end{figure}
 
 
 \pagebreak

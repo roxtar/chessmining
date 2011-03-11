@@ -1,18 +1,21 @@
-PGN_FILES = $(wildcard ../pgn/*.pgn)
-ALL_COMPUTERS_PGN = computers.pgn 
-CSV = computers_elo.csv computers_eco.csv
+COMPUTERS_PGN_FILES = $(wildcard ../pgn/computers/*.pgn)
+COMPUTERS_FILTERED = $(subst ../pgn/computers/,,$(COMPUTERS_PGN_FILES)) 
+COMPUTERS_CSV = $(patsubst %.pgn, %.csv, $(COMPUTERS_FILTERED))
+PGN_DIR = ../pgn/computers
+
 SCRIPTS = ../scripts
 
-all: computers_finger.txt computers_blitz_rating.csv
+all: computers_finger.txt computers_blitz_rating.csv $(COMPUTERS_CSV)
 
-#$(ALL_COMPUTERS_PGN): 
-#	perl $(SCRIPTS)/filter_pgn.pl $(PGN_FILES) > $@
+csv: $(COMPUTERS_CSV)
 
-#computers_elo.csv: $(ALL_HUMANS_PGN)
-#	python $(SCRIPTS)/playerelo.py $< > $@
 
-#computers_eco.csv: $(ALL_HUMANS_PGN)
-#	python $(SCRIPTS)/eco.py $< > $@
+$(COMPUTERS_CSV): $(COMPUTERS_FILTERED)
+	python $(SCRIPTS)/moves.py $(patsubst %.csv, %.pgn, $@) > $@
+
+$(COMPUTERS_FILTERED): $(COMPUTERS_PGN_FILES)
+
+	perl $(SCRIPTS)/filter_pgn.pl $(PGN_DIR)/$@ > $@
 
 
 computers_finger.txt: computers_list.txt
@@ -24,7 +27,9 @@ computers_blitz_rating.csv: computers_finger.txt
 	bash $(SCRIPTS)/get_rating.sh $<  $@
 
 clean:
-	rm -rf $(CSV)
-	rm -rf *.pyc
+	rm -rf $(COMPUTERS_CSV) computers_finger.txt computers_blitz_rating.csv $(COMPUTERS_FILTERED)
+
+cleancsv:
+	rm -rf $(COMPUTERS_CSV) $(COMPUTERS_FILTERED)
 
 .PHONY: clean 
