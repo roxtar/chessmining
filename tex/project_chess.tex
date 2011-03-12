@@ -1,5 +1,5 @@
 \documentclass{article}
-
+\usepackage{amsmath}
 \usepackage[pdftex]{graphicx}
 \usepackage{url}
 \author{Rohit Kumar \\UCLA ID: 203884129}
@@ -12,11 +12,13 @@
 
 \section{Introduction}
 \label{sec:intro}
-The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} maintains an extensive set of chess games in its database. The data set contains games from 1999 to 2011 and includes players of all kinds of ratings -- from the very beginner, to grand masters, to computers. Apart from the traditional chess games, people also play chess variants on the server. For example: suicide chess, losers, crazhouse etc. The data for each game is captured as a Portable Game Notation (PGN) \cite{wiki:pgn} file and contains information regarding the moves played, the players names, their rating, time controls used and the result. \\
+The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} maintains an extensive set of chess games in its database. The data set contains games from 1999 to 2011 and includes players of all kinds of ratings -- from the very beginner, to grand masters, to computers. Apart from the traditional chess games, people also play chess variants on the server. For example: suicide chess, losers, crazyhouse etc. The data for each game is captured as a Portable Game Notation (PGN) \cite{wiki:pgn} file and contains information regarding the moves played, the players names, their rating, time controls used and the result. \\
 
 As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers. This project aims at finding interesting patterns in the FICS chess data set.
 
-\section{PGN Parser}
+\section{Data Acquisition}
+
+\subsection{PGN Parser}
 
 As mentioned in Section~\ref{sec:intro}, the games in the FICS
 database are stored in the PGN file format. PGN is a standard way for
@@ -75,7 +77,7 @@ The meta information is stored as key-value players and are the fields enclosed 
 
 The PGN parser extracts both the meta information and the moves from the PGN file. The contents of the entire PGN file is stored within a \verb=PgnDatabase= class. The \verb=PgnDatabase= class contains a list of \verb=PgnGame= instances.
 
-\section{Player Statistics}
+\subsection{Player Statistics}
 \label{sec:pstats}
 The PGN database only gives details regarding individual games played on the FICS server. It doesn't give us individual player statistics. These were gathered by executing a command on the FICS server called \verb=finger=. 
 
@@ -115,7 +117,9 @@ To execute the \verb=finger= command on the server a Perl script was written, wh
 
 The FICS website or server doesn't provide a means to extract a list of all user names in the system. So instead, a PGN file containing 5000 games was downloaded for each month between March 2010 to March 2011 and the statistics for all users who participated in those games was extracted. 
 
-\section{Exploring Ratings}
+\section{Data Analysis}
+
+\subsection{Exploring Ratings}
 The FICS server has got a rating system based on the Glicko system ~\cite{spec:glicko}. Each player has a rating which is a number ranging between 600-3000. The higher the rating, the better the player. The Glicko rating system has another factor called \textsl{Ratings Deviation(RD)}, which measures the accuracy of the rating. The lower the Ratings Deviation (RD), the more accurate is the rating of the player.\\
 
 In addition to this, the FICS server allows to users to play at a pace of their own choice. This leads to three varieties of time controls in regular chess: lightning, blitz and standard. Lighting being the fastest, with games finishing in under 6 minutes total, and standard being the slowest. For each of these different time controls, the user has different ratings, i.e a user's blitz rating will not be influenced by any of the lightning games which she plays and vice-versa.Time controls which fall under the blitz category are the most popular.\\
@@ -146,7 +150,7 @@ The list of computers operating on the FICS server was available readily. The sa
 
 
 
-\section{Game Totals}
+\subsection{Game Totals}
 
 A related statistic is the number of games a particular user has played. One could conjecture that human players would have played lesser number of games as compared to the computers on the server. The totals for the blitz games played, were plotted for humans and computers (Figure ~\ref{fig:gametotals}). The computer which has played the highest number of blitz games is {\sl mscp(C)} and the human is a user named {\sl gianti}. What's surprising is that {\sl mscp(C)} has played over 1 million games, which is 10 times the number of games which {\sl gianti} has played.\\
 
@@ -221,7 +225,7 @@ Another thing which can be noticed is that most computers have totals below 200,
 \end{figure}
 
 
-\section{Opening Strategies}
+\subsection{Opening Strategies}
 The initial moves played in a chess game constitute of what is known as the ``Opening'' of a game. There are various opening strategies each with its strength and weaknesses. Although the first move is played by White, the opening relies open Black's response.\\
 
 The standard way of categorizing chess openings is to use Encyclopaedia of Chess Openings or ECO codes. The ECO codes are categoriezed into five sub-divisions labeled from ``A'' to ``E''. Each sub-division in turn has 100 sub-categories ~\cite{wiki:eco}.\\
@@ -247,7 +251,68 @@ Surprisingly the most popular opening is the A00 opening. A00 is the ``uncommon 
 \end{figure}
 
 
-\section{Frequent Pattern Matching}
+\subsection{Frequent Pattern Mining}
+Frequent Pattern Mining deals with finding interesting patterns in an itemset. This includes finding associations, sequences, clusters, etc. Finding out association rules was first used in the analysis of market transactions. It was first presented in 1993 by Agrawal~\cite{paper:agrawal}. The basics of pattern mining with specific focus on assocation rules is presented in the following sub-section.
+
+
+\subsubsection{Definitions}
+The definitions presented in this section are from the report ``A Survey on Frequent Pattern Mining'', by Bart Goethals~\cite{report:patternmining}.\\
+
+Let $I$ be a set of items. A set $X = \{i_1, ... i_k\} \subseteq I$ is called an {\sl itemset}. \\
+
+A {\sl transaction} over $I$ is a couple $T = (tid, I)$ where {\sl tid} is the transaction identifier and $I$ is an itemset. A {\sl transaction database} $D$ over $I$ is a set of transactions over $I$. \\
+
+The {\sl cover} of an itemset $X$ in $D$ consist of the set of transaction identifiers of transactions in $D$ that support $X$:
+
+\[cover(X, D) := \{tid | (tid, I) \in D, X \subseteq I\}. \]
+
+The {\sl support} of an itemset $X$ in $D$ is the number of transactions in the cover of $X$ in $D$:
+
+\[support(X, D) := |cover(X,D)|.\]
+
+An itemset is called {\sl frequent} if its support is no less than a given absolute {\sl minimal support threshold $\sigma_{abs}$}, with  $0 \le \sigma_{abs} \le |D|$.
+
+{\bf Definition 1.} Let $D$ be a transaction database over a set of items $I$, and $\sigma$ a minimal support threshold. The collection of frequent itemsets in $D$ with resepct to $\sigma$ is denoted by: 
+
+\[F(D,\sigma) := \{X \subseteq I | support(X, D) \ge \sigma\}.\]
+
+{\bf Problem 1. (Itemset Mining)} Given a set of items $I$, a transaction database $D$ over $I$, and minimal support threshold $\sigma$, find $F(D, \sigma)$.\\
+
+In practice we are not only interested in the set of itemsets $F$, but also
+in the actual supports of these itemsets.\\
+
+An association rule is an expression of the form $X \Rightarrow Y$ ,
+where $X$ and $Y$ are itemsets, and $X \cap Y = \{\}$. Such a rule
+expresses the association that if a transaction contains all items in
+$X$, then that transaction also contains all items in $Y$. $X$ is called
+the body or antecedent, and $Y$ is called the head or consequent of the
+rule.\\
+
+The support of an association rule $X \Rightarrow Y$ in $D$, is the
+support of $X \cup Y$ in $D$. An association rule is called
+frequent if its support exceeds a given minimal support
+(frequency) threshold $\sigma_{abs}$. \\
+
+The confidence or accuracy of an association rule $X \Rightarrow Y$ in
+$D$ is the conditional probability of having $Y$ contained in a
+transaction, given that $X$ is contained in that transaction:
+
+\[confidence(X \Rightarrow Y, D) := P(Y|X) = \frac{support(X \cup Y, D)}{support(X,D)}\]
+
+The rule is called confident if $P(Y|X)$ exceeds a given minimal confidence threshold $\gamma$, with $0 \le \gamma \le 1$. \\
+
+{\bf Definition 2.} Let $D$ be a transaction database over a set of items $I$, $\sigma$ a minimal support threshold, and $\gamma$ a minimal confidence threshold. The collection of frequent and confident association rules with respect to $\sigma$ and $\gamma$ is denoted by:
+
+\begin{align*}
+R(D, \sigma, \gamma) := \{X \Rightarrow Y | X, Y \subseteq I, \\
+X \cap Y = \{\}, \\X \cup Y \in F(D, \sigma),\\ confidence(X \Rightarrow Y, D) \ge \gamma\}
+\end{align*}
+
+
+{\bf Problem 2. (Association Rule Mining)} Given a set of items $I$, a transaction database $D$ over $I$, and minimal support and confidence thresholds $\sigma$ and $\gamma$, find $R(D, \sigma, \gamma)$.
+
+
+
 \section{Conclusion}
 \section{Appendix A: Source Code}
 
