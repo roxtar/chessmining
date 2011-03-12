@@ -159,6 +159,8 @@ A related statistic is the number of games a particular user has played. One cou
 \label{fig:gametotals}
 \end{figure}
 
+
+
 One might postulate that a human player's rating is correlated to the number of games she has played. With the assumption that a player will learn and improve over time. This though is found to be not true. If we plot the player's rating against her ratings deviation (which is a measure of the how frequently a user plays games and the accuracy of her rating) and the total number of games played, we find that there is no such correlation (Figure ~\ref{fig:ratingsrdtotal}).\\
 
 \begin{figure} [htp]
@@ -168,6 +170,36 @@ One might postulate that a human player's rating is correlated to the number of 
 \caption{Blitz Game Totals for Humans and Computers}
 \label{fig:ratingsrdtotal}
 \end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+
+- & Rating & RD & Won & Lost & Drawn & Total \\
+\hline
+Rating & 1.00 & -0.16 & 0.28 & 0.18 & 0.31 & 0.24\\
+\hline
+RD & -0.16 & 1.00 & -0.35 & -0.37 & -0.33 & -0.37\\
+\hline
+Won & 0.28 & -0.35 & 1.00 & 0.89 & 0.89 & 0.97\\
+\hline
+Lost & 0.18 & -0.37 & 0.89 & 1.00 & 0.88 & 0.97\\
+\hline
+Drawn & 0.31 & -0.33 & 0.89 & 0.88 & 1.00 & 0.92\\
+\hline
+Total & 0.24 & -0.37 & 0.97 & 0.97 & 0.92 & 1.00\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Correlation Matrix for Player Statistics}
+\label{fig:playercor}
+\end{figure}
+
+
+
+This is confirmed when we see the correlation matrix for the player statistics in Figure~\ref{fig:playercor}. We can see that in the row for ``Rating'' almost all columns are below 0.4 and above 0.1. We see strong correlation between the ``Total'' and the ``Won'', ``Lost'' and ``Drawn'' columns, but that's expected because ``Total'' is the sum of those three columns. What's interesting though is the ``Won'' row, where we find that the number of wins is strongly correlated to the number of ``Lost'' and ``Drawn'' games. \\
+
 
 
 Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals. We find that the distribution for humans follows a power law (Figure ~\ref{fig:humanstotal}). The distribution for the computers though is not as beautiful (Figure ~\ref{fig:compstotal}).\\
@@ -188,7 +220,7 @@ Another thing which can be noticed is that most computers have totals below 200,
 \label{fig:compstotal}
 \end{figure}
 
-\clearpage
+
 \section{Opening Strategies}
 The initial moves played in a chess game constitute of what is known as the ``Opening'' of a game. There are various opening strategies each with its strength and weaknesses. Although the first move is played by White, the opening relies open Black's response.\\
 
@@ -203,6 +235,22 @@ In all of the games played on FICS, these ECO codes are recorded in the PGN file
 \caption{Barplot Showing the 20 most popular Openings}
 \label{fig:ecobar}
 \end{figure}
+
+Surprisingly the most popular opening is the A00 opening. A00 is the ``uncommon opening'' , which as the name suggests should be ``uncommon'' but is in fact the most commmon. The 2nd opening, B01 is the Sandinavian opening and starts with the {\bf 1. e4 d5} (white moves the King's pawn two steps, to which Black counters by moving her Queen's pawn two steps). The barplot of course shows openings across all ratings. On changing the ratings and plotting we would expect to see a difference in the frequency of the ratings. This is found to be true as seen in Figure~\ref{fig:ecobarcomp}
+
+\begin{figure} [htp]
+\begin{center}
+\includegraphics[width=5in]{eco_bar_comp.png}
+\end{center}
+\caption{Top Five Openings for Above Average and Below Average Players}
+\label{fig:ecobarcomp}
+\end{figure}
+
+
+\section{Frequent Pattern Matching}
+\section{Conclusion}
+\section{Appendix A: Source Code}
+
 
 
 \pagebreak
