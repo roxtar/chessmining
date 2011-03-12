@@ -114,7 +114,7 @@ Timeseal 1 : On
 
 \pagebreak
 
-To execute the \verb=finger= command on the server a Perl script was written, which would telnet to the FICS server, run the command and return the output \footnote{The finger command can also be executed from the FICS website. In fact the initial method to obtain player statistics used the website. A script would repeatedly query the website for the statistics. This method though generated a lot of requests for the web server and server administrators blocked the author's IP address from accessing the web page.}  The output was then filtered to obtain the player statistics in CSV format. \\
+To execute the \verb=finger= command on the server a Perl script was written, which would telnet to the FICS server, run the command and return the output. The output was then filtered to obtain the player statistics in CSV format. \\
 
 The FICS website or server doesn't provide a means to extract a list of all user names in the system. So instead, a PGN file containing 5000 games was downloaded for each month between March 2010 to March 2011 and the statistics for all users who participated in those games was extracted. 
 
@@ -365,7 +365,7 @@ If someone is inflating their rating by playing similar moves repeatedly, we wou
 
 The last 10000 games of three computer programs were downloaded. These programs were {\sl mscp, inemuri and IFDThor}. They are the top three amongst the computers which have played the most number of games. Half the games consisted of plays where the computer was playing White and the other half Black. The game database PGN files were parsed and the moves were extracted into a CSV file format which would be understandable by the \verb=read.transactions= function. Each game was listed as a sequence of comma separated moves on each line of the file. The first item on each line is the game ID (Figure~\ref{fig:movecsv}).\\
 
-\begin{figure}
+\begin{figure}[htp]
 
 \begin{verbatim}
 274021904, fxg4,Rd4, Nf2,Rxd3, Rxd3,f5, Rxe3,Qc5, Rxe6,fxg4, Re8,Qxh5
@@ -383,14 +383,53 @@ The last 10000 games of three computer programs were downloaded. These programs 
 On applying the association rule mining function \verb=apriori= we found that there were a large number of association rules generated. Looking at the rules, it was found that a number of rules corresponded to the opening moves of the game and as many games share the same opening they had high associativity. To cut down on the number of association rules, rather than looking at all the moves of a game, we could only look at the last 10 moves. Also as we were looking for cheaters, we needed only look at those games where the computer lost.\\
 
 
-After filtering the games, we were able to cut down on the number of association rules generated. We also needed to play around with the support and confidence values to obtain a manageable number of rules. When we looked at the rules generated, we found that there were a number of games which had the same moves repeated. On extracting the IDs of these games and looking back at the game database, it was found that people cheat against computers on a regular basis. \\
+After filtering the games, we were able to cut down on the number of association rules generated. We also needed to play around with the support and confidence values to obtain a manageable number of rules. A listing of the top 10 rules for the computer account {\sl inemuri} is listed in Figure~\ref{fig:inemuriwhite}.
+
+\begin{figure}[htp]
+\begin{verbatim}
+       lhs        rhs        support confidence     lift
+    1  { Nf3}  => { c3}   0.10042008  0.6107056 3.200123
+    2  { bxa3} => { c3}   0.08321664  0.9742389 5.105053
+    3  { Bxf6} => {f6}    0.08321664  0.8404040 8.189434
+    4  {f6}    => { Bxf6} 0.08321664  0.8109162 8.189434
+    5  { Bxf6} => { Nf3}  0.08321664  0.8404040 5.110924
+    6  { bxa3} => {a3}    0.08261652  0.9672131 8.557696
+    7  {a3}    => { bxa3} 0.08261652  0.7309735 8.557696
+    8  {f6}    => { Nf3}  0.08261652  0.8050682 4.896029
+    9  {a3}    => { c3}   0.08201640  0.7256637 3.802508
+    10 { Bg5}  => { Bxf6} 0.07781556  0.9373494 9.466282
+\end{verbatim}
+
+\caption{Top 10 Association Rules for inemuri playing White}
+\label{fig:inemuriwhite}
+\end{figure}
+
+We can see that the rule $\{bxa3\} \Rightarrow \{c3\}$ has the highest confidence measure (0.97). When this move sequence was searched for {\sl inemuri's} game datbase it was found to be heavily repeated. The exact move sequence being:
+
+\begin{quote}
+\begin{verbatim}
+Nf3, a3 
+Bg5, f6
+Bxf6, Qxf6
+bxa3, Bxa3
+Bxh7+, Kxh7
+c3, Bf5+
+Rd3, Bxd3+  {White resigns} 0-1
+\end{verbatim}
+\end{quote}
+
+There were similar repeated move sequences found when {\sl inemuri} played black. For {\sl mscp} and {\sl IFDThor} we were unable to find such moves and that could be one reason why both those programs are rated higher than {\sl inemuri} \footnote{mscp: 1636, IFDThor: 1638, Inemuri: 1337}.
+
+\section{Conclusion and Lessons Learnt}
+
+Mining the chess game database was an enjoyable exercise. There were many thing which the were discovered which weren't evident at the onset. A major portion of the time was spent in trying to acquire the data and cleanse it. One such challenge was in acquiring the player statistics data. The initial method to obtain player statistics used the FICS website. A script would run in a loop and repeatedly query the website for the statistics, which would then be downladed. This method though generated a lot of requests. In response, the server administrators blocked my IP address from accessing the web page, thinking it was a DoS attack. On contacting the server administrators, they suggested that a better way would be to make the script directly telnet to the server and then download the data. \\
+
+R was found to be a powerful tool. Learning parts of it though is hard.  When searching through Google many times the search engine would just drop the term ``R'' and search for the rest of the keywords.\\ 
+
+Many of the techniques which were taught in the course: SVD, PCA, Modeling and Classifiers could have been applied to the data, but no strong justification was found to apply them. But on the other hand, this led me to learn frequent pattern mining which did find application.
 
 
-
-\section{Conclusion}
 \section{Appendix A: Source Code}
-
-
 
 \pagebreak
 \bibliography{project_chess}
