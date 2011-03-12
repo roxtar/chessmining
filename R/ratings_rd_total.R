@@ -11,3 +11,7 @@ plot(humans$BlitzRating ~ humans$BlitzTotal, col=xcolors, pch=20, ylab="Blitz Ra
 legend("topright", pch=c(20,20), col=c("red", "gray"), legend=c("Rating > 1500", "Rating < 1500"), cex=0.8)
 
 
+par(opar)
+
+## print correlation matrix
+print(round(cor(humans[, 2:7]), 2)

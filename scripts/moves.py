@@ -9,6 +9,7 @@ for f in sys.argv:
         movelen = len(game.moves)
         if(movelen >= num_moves):
             i=movelen - num_moves
+            print game.tags["FICSGamesDBGameNo"] + ",",
             while(i < movelen-1):
                 print game.moves[i][0] + "," +game.moves[i][1] + ",",
                 i+=1 

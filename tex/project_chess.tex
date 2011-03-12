@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage[pdftex]{graphicx}
 \usepackage{url}
+\usepackage{enumerate}
 \author{Rohit Kumar \\UCLA ID: 203884129}
 \title{Data Mining Chess Games \\ CS 249: Term Project, Winter 2011}
 \begin{document}
@@ -252,7 +253,7 @@ Surprisingly the most popular opening is the A00 opening. A00 is the ``uncommon 
 
 
 \subsection{Frequent Pattern Mining}
-Frequent Pattern Mining deals with finding interesting patterns in an itemset. This includes finding associations, sequences, clusters, etc. Finding out association rules was first used in the analysis of market transactions. It was first presented in 1993 by Agrawal~\cite{paper:agrawal}. The basics of pattern mining with specific focus on assocation rules is presented in the following sub-section.
+Pattern Mining deals with finding interesting patterns in an itemset. This includes finding associations, sequences, clusters, etc. Finding out association rules was first used in the analysis of market transactions. It was first presented in 1993 by Agrawal~\cite{paper:agrawal}. The basics of pattern mining with specific focus on assocation rules is presented in the following sub-section.
 
 
 \subsubsection{Definitions}
@@ -306,10 +307,83 @@ The rule is called confident if $P(Y|X)$ exceeds a given minimal confidence thre
 \begin{align*}
 R(D, \sigma, \gamma) := \{X \Rightarrow Y | X, Y \subseteq I, \\
 X \cap Y = \{\}, \\X \cup Y \in F(D, \sigma),\\ confidence(X \Rightarrow Y, D) \ge \gamma\}
-\end{align*}
+\end{align*}\\
 
 
-{\bf Problem 2. (Association Rule Mining)} Given a set of items $I$, a transaction database $D$ over $I$, and minimal support and confidence thresholds $\sigma$ and $\gamma$, find $R(D, \sigma, \gamma)$.
+{\bf Problem 2. (Association Rule Mining)} Given a set of items $I$, a transaction database $D$ over $I$, and minimal support and confidence thresholds $\sigma$ and $\gamma$, find $R(D, \sigma, \gamma)$. \\
+
+For a more thorough discussion on itemset and association rule mining please see~\cite{report:patternmining}.\\
+
+\subsubsection{Association Mining in R}
+
+The packages {\sl arules}~\cite{r:arules} and {\sl arulesSequences}~\cite{r:arulesseq} are two libraries which can be used for itemset and association mining in R. They can be installed using the standard \verb=install.packages= command. These packages required R 2.11 or greater.\\
+
+The {\sl arules} package provides functions to read in transactions
+and perform association mining using a number of algorithms, like
+apriori, eclat, FP-growth etc.\\
+
+To read transaction data, the \verb=read.transactions= method can be
+used. The method takes the name of a file which contains transaction
+data. The transaction data are separated using a delimiter. The
+\verb=read.transactions= method returns a transaction object. One can
+get information about an item's support values from the transaction
+object. The transaction object can also be used to deduct association
+rules by passing it to the \verb=apriori= method.
+
+\subsection{Pattern Mining Chess Games}
+One way to think of chess games is to think of the individual moves
+played in a game as an itemset chosen from all possible moves. To use
+the frequency pattern mining terminology, individual games can be
+thought of as a transaction, where moves are items. The entire game
+database is analogous to the transaction database. \\
+
+Thus, it is possible to use pattern mining to discover patterns in
+chess games. We would expect to see high support and confidence values
+for rules which represent the opening moves. This would be because
+most chess games start of with standard opening moves. But at the same
+time, trying to discover interesting association rules is hard, due to
+the following reasons.
+
+\begin{enumerate}
+\item The number of games present in the game database (or more exactly the portion of the database which was downloaded) is quite large. 
+
+\item The number of individual moves played per game is large.
+
+\item We don't clearly know what we are looking for or what we mean by  ``interesting.''
+
+\end{enumerate}
+
+\subsection{Weeding out Cheaters}
+As mentioned before the FICS chess server hosts many chess programs. Many of these programs are hobby projects and aren't highly rated. Amongst these there are computers which do not {\sl learn} from their previous games. Thus it is possible for a human player to exploit a particular weakness in a computer's game by playing the same moves from a previously won game. By doing this, the human can easily increase her rating. The server policy explicitly states that \cite{web:ficspolicy}
+\begin{quote}
+{\sl 13. It is against server policy, when playing against computer accounts, to play the same line repeatedly (e.g. to inflate your rating).}
+\end{quote}
+
+Despite that, there is no strict checking in place to find humans who do this. Using pattern mining techniques, we could find if such cheaters exist.\\
+
+If someone is inflating their rating by playing similar moves repeatedly, we would expect such moves to have low support, but  high confidence values. We assume that in most games against computers humans don't cheat, but people who cheat, do so repeatedly. \\
+
+The last 10000 games of three computer programs were downloaded. These programs were {\sl mscp, inemuri and IFDThor}. They are the top three amongst the computers which have played the most number of games. Half the games consisted of plays where the computer was playing White and the other half Black. The game database PGN files were parsed and the moves were extracted into a CSV file format which would be understandable by the \verb=read.transactions= function. Each game was listed as a sequence of comma separated moves on each line of the file. The first item on each line is the game ID (Figure~\ref{fig:movecsv}).\\
+
+\begin{figure}
+
+\begin{verbatim}
+274021904, fxg4,Rd4, Nf2,Rxd3, Rxd3,f5, Rxe3,Qc5, Rxe6,fxg4, Re8,Qxh5
+274021494, b6,e5, b7,Kd6, b8=Q+,Ke6, Nc5+,Kd5, Nab3,Ne6, Nxe6,Kxe6, Ke2
+274021332, Rxb4,a2, Ra4,Kc5, Rxa2,Kc4, Ra4+,Kd5, Rd4+,Ke6, Rxd3,Kf5, Ke3
+274021097, Kh3,Rb2, Rg5,g6, Re5,h6, Rxe6+,Kb5, Rce4,g5, fxg5,hxg5, hxg5
+274019453, b6,Nd2+, Kd5,Nf3, b7,Nd4, b8=Q,Nf3, Qd6+,Kg7, Qe7,Ne1, Qxf7+
+274018954, Rxe8,Rxe8, Ke6,a5, d7,Rxe7+, Kxe7,a4, d8=Q,Kh6, Qb6+,g6, Qa5
+\end{verbatim}
+\caption{Comma Separated Move File}
+\label{fig:movecsv}
+\end{figure}
+
+
+On applying the association rule mining function \verb=apriori= we found that there were a large number of association rules generated. Looking at the rules, it was found that a number of rules corresponded to the opening moves of the game and as many games share the same opening they had high associativity. To cut down on the number of association rules, rather than looking at all the moves of a game, we could only look at the last 10 moves. Also as we were looking for cheaters, we needed only look at those games where the computer lost.\\
+
+
+After filtering the games, we were able to cut down on the number of association rules generated. We also needed to play around with the support and confidence values to obtain a manageable number of rules. When we looked at the rules generated, we found that there were a number of games which had the same moves repeated. On extracting the IDs of these games and looking back at the game database, it was found that people cheat against computers on a regular basis. \\
 
 
 

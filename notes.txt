@@ -16,3 +16,13 @@ http://cran.r-project.org/bin/linux/ubuntu/README
 
 Inemuri black
 rules <- apriori(trans, parameter = list(sup=0.039, conf = 0.5, target="rules", minlen=2))
+
+loading data 
+duplicates
+look for computer cheeaters
+find average number of moves played per game
+look at only latter half of the moves, as the former half will be mostly opening.
+look for association rules in latter half of the game with low support but high confidence.
+found cheaters
+pattern mining led to the discovery, but there is much easier method to weed them out. sort | uniq -d
+
