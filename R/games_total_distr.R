@@ -13,7 +13,7 @@ computers.table <- read.csv("../computers/computers_blitz_rating.csv", header=T)
 humans.pruned <- humans.table$BlitzTotal[humans.table$BlitzTotal < 60000]
 computers.pruned <- computers.table$BlitzTotal[computers.table$BlitzTotal < 200000]
 
-
+opar <- par(mfrow=c(1,2))
 plotTotalHist(humans.pruned, "Humans Total")
-readline("Hit <enter> to see next plot:")
 plotTotalHist(computers.pruned, "Computers Total")
+par(opar)

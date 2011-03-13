@@ -3,6 +3,7 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{url}
 \usepackage{enumerate}
+
 \author{Rohit Kumar \\UCLA ID: 203884129}
 \title{Data Mining Chess Games \\ CS 249: Term Project, Winter 2011}
 \begin{document}
@@ -176,7 +177,7 @@ One might postulate that a human player's rating is correlated to the number of 
 \label{fig:ratingsrdtotal}
 \end{figure}
 
-\begin{figure}[htp]
+\begin{table}[htp]
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
@@ -198,34 +199,26 @@ Total & 0.24 & -0.37 & 0.97 & 0.97 & 0.92 & 1.00\\
 \end{tabular}
 \end{center}
 \caption{Correlation Matrix for Player Statistics}
-\label{fig:playercor}
-\end{figure}
+\label{tab:playercor}
+\end{table}
 
 
 
-This is confirmed when we see the correlation matrix for the player statistics in Figure~\ref{fig:playercor}. We can see that in the row for ``Rating'' almost all columns are below 0.4 and above 0.1. We see strong correlation between the ``Total'' and the ``Won'', ``Lost'' and ``Drawn'' columns, but that's expected because ``Total'' is the sum of those three columns. What's interesting though is the ``Won'' row, where we find that the number of wins is strongly correlated to the number of ``Lost'' and ``Drawn'' games. \\
+This is confirmed when we see the correlation matrix for the player statistics in Table~\ref{tab:playercor}. We can see that in the row for ``Rating'' almost all columns are below 0.4 and above 0.1. We see strong correlation between the ``Total'' and the ``Won'', ``Lost'' and ``Drawn'' columns, but that's expected because ``Total'' is the sum of those three columns. What's interesting though is the ``Won'' row, where we find that the number of wins is strongly correlated to the number of ``Lost'' and ``Drawn'' games. \\
 
 
 
-Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals. We find that the distribution for humans follows a power law (Figure ~\ref{fig:humanstotal}). The distribution for the computers though is not as beautiful (Figure ~\ref{fig:compstotal}).\\
-
-\begin{figure} [htp]
-\begin{center}
-\includegraphics[width=3in]{humans_total.png}
-\end{center}
-\caption{The Distribution of Total for Humans follows a Power Law}
-\label{fig:humanstotal}
-\end{figure}
+Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals. We find that the distribution for humans follows a power law (Figure ~\ref{fig:totalsdistr}). The distribution for the computers though is not as beautiful (Figure ~\ref{fig:totalsdistr}).\\
 
 \begin{figure} [htp]
 \begin{center}
-\includegraphics[width=3in]{computers_total.png}
+\includegraphics[width=3in]{totals_distr.png}
 \end{center}
-\caption{The Distribution of Total for Computers}
-\label{fig:compstotal}
+\caption{The Distribution of Total Games for Humans and Computers}
+\label{fig:totalsdistr}
 \end{figure}
 
-
+\clearpage
 \subsection{Opening Strategies}
 The initial moves played in a chess game constitute of what is known as the ``Opening'' of a game. There are various opening strategies each with its strength and weaknesses. Although the first move is played by White, the opening relies open Black's response.\\
 
@@ -428,8 +421,32 @@ R was found to be a powerful tool. Learning parts of it though is hard.  When se
 
 Many of the techniques which were taught in the course: SVD, PCA, Modeling and Classifiers could have been applied to the data, but no strong justification was found to apply them. But on the other hand, this led me to learn frequent pattern mining which did find application.
 
-
+\pagebreak
 \section{Appendix A: Source Code}
+The source code for this project is available at http://github.com/roxtar/??. The contents of each directory are described in Table~\ref{tab:src}.\\
+\begin{table}[htp]
+\begin{center}
+\begin{tabular}{|l|p {8cm} |}
+\hline
+Directory & Description \\
+\hline
+\verb=computers= & CSV files related to computer data. Includes computer game statistics information and data required for frequent pattern mining.\\
+\hline
+\verb=humans= & CSV files related to human data. Includes human game statistics and data required to calculate opening frequencies. \\
+\hline
+\verb=pgn= & Raw PGN files containing game data. This is the largest folder containing data for over 75000 games.\\
+\hline
+\verb=R= & R source which was used to perform data analysis and visualization.\\
+\hline
+\verb=scripts= & Perl, Python and shell scripts used to extract and cleanse data.\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Source Code Organization}
+\label{tab:src}
+\end{table}
+
+Running the \verb=make= command while within the \verb=humans= and \verb=computers= directories will generate all the CSV data from the raw data. It will also invoke the script which fetches the player statistics data from the FICS server and may take some time.\\
 
 \pagebreak
 \bibliography{project_chess}
