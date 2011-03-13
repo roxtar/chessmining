@@ -1,0 +1,68 @@
+DATA MINING CHESS GAMES
+-----------------------
+
+The Free Internet Chess Server (FICS) 1 maintains an extensive set of
+chess games in its database. The data set contains games from 1999 to
+2011 and in- cludes players of all kinds of ratings – from the very
+beginner, to grand masters, to computers. Apart from the traditional
+chess games, people also play chess variants on the server. For
+example: suicide chess, losers, crazyhouse etc. The data for each game
+is captured as a Portable Game Notation (PGN) [13] file and contains
+information regarding the moves played, the players names, their
+rating, time controls used and the result.  As of this writing the
+FICS chess database contains game records for over 130,000,000 chess
+games, played by over 300,000 humans and 1,400 computers.  This
+project aims at finding interesting patterns in the FICS chess data
+set.
+
+
+SOURCE CODE 
+-----------
+
+computers/ - CSV files related to computer data. Includes computer
+	     game statistics information and data required for
+	     frequent pattern mining.
+
+humans/  -   CSV files related to human data. Includes human game
+	     statistics and data required to calculate open- ing
+	     frequencies.
+
+R/ 	 -   R source which was used to perform data analysis
+   	     and visualization.
+
+scripts/ -   Perl, Python and shell scripts used to extract and
+	     cleanse data.
+
+tex/     -   LaTeX source which was used to generate the reports.
+
+
+Running the make command while within the humans and computers direc-
+tories will generate all the CSV data from the raw data. It will also
+invoke the script which fetches the player statistics data from the
+FICS server and may take some time. 
+
+NOTE: This distribution does not include the raw PGN files which were
+used to create the CSV files. This was done because they were really
+huge. You can contact the author to obtain the PGN files.
+
+
+COPYING
+-------
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+AUTHOR
+------
+
+Rohit - roxtar@gmail.com
