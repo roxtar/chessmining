@@ -25,7 +25,7 @@ The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} mainta
 
 As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers. This project aims at finding interesting patterns in the FICS chess data set.
 
-\section{Data Acquisition}
+\section{Data Collection}
 
 \subsection{PGN Parser}
 
@@ -81,15 +81,15 @@ PGN is a text based format and looks in some ways similar to the Windows INI fil
 \label{fig:pgn}
 \end{figure}
 
-Each PGN file can have details regarding more than one game. A game contains some meta information like the player information, their ratings, the time controls used, which is followed by the actual moves played by the players.\\
+Each PGN file can have details regarding more than one game. A game contains some meta information like the player names, their ratings, the time controls used, which is followed by the actual moves played by the players.\\
 
-The meta information is stored as key-value players and are the fields enclosed within '[' and ']' in Figure~\ref{fig:pgn}. The moves come after that and are prefixed with numbers. The white player's move is listed first, followed by black. The moves are denoted using the Standard Algebraic Chess Notation~\cite{wiki:san}. \\
+The meta information is stored as key-value pairs and are the fields enclosed within `[' and `]' in Figure~\ref{fig:pgn}. The moves come after that and are prefixed with numbers. The White player's move is listed first, followed by Black. The moves are denoted using the Standard Algebraic Chess Notation~\cite{wiki:san}. \\
 
-The PGN parser extracts both the meta information and the moves from the PGN file. The contents of the entire PGN file is stored within a \verb=PgnDatabase= class. The \verb=PgnDatabase= class contains a list of \verb=PgnGame= instances.
+A PGN parser was written in Python to extract information from the PGN database files. The PGN parser extracts both the meta information and the moves from the PGN file. The parser is contained within the python file \verb=pgnparse.py=. It's present under the \verb=scripts= directory in the source. The PGN parser is used by other scripts to extract information from the PGN database and convert it into a format which is easy to process in R.
 
 \subsection{Player Statistics}
 \label{sec:pstats}
-The PGN database only gives details regarding individual games played on the FICS server. It doesn't give us individual player statistics. These were gathered by executing a command on the FICS server called \verb=finger=. 
+The PGN database only gives details regarding individual games played on the FICS server. It doesn't give much information regarding individual player statistics. These statistics can be  obtained  by executing a command on the FICS server called \verb=finger=. 
 
 The \verb=finger= command lists a player's details such as, their rating, number of games played, won, lost, etc. An example output of running the command \verb="finger roxtar"= on the FICS server is shown in Figure~\ref{fig:finger}
 
@@ -123,9 +123,10 @@ Timeseal 1 : On
 
 \pagebreak
 
+The FICS website or server doesn't provide a means to extract a list of all user names in the system. So instead, a PGN file containing 5000 games was downloaded for each month between March 2010 to March 2011 and the statistics for all users who participated in those games was extracted. 
+
 To execute the \verb=finger= command on the server a Perl script was written, which would telnet to the FICS server, run the command and return the output. The output was then filtered to obtain the player statistics in CSV format. \\
 
-The FICS website or server doesn't provide a means to extract a list of all user names in the system. So instead, a PGN file containing 5000 games was downloaded for each month between March 2010 to March 2011 and the statistics for all users who participated in those games was extracted. 
 
 \section{Data Analysis}
 
@@ -142,6 +143,9 @@ In addition to this, the FICS server allows to users to play at a pace of their 
 \label{fig:humanrating}
 \end{figure}
 
+The computer accounts which are present on the FICS server run chess programs. These programs are either commercially available programs like Fritz~\cite{web:fritz}, or are open source, like Crafty~\cite{web:crafty} or mscp~\cite{web:mscp}. Apart from the kind of program running, the computers running them differ in hardware. The hardware's capabilities also influence the chess program's strength. With faster hardware we would expect the program to be able to search deeper in the tree. Due to these two factors, namely difference in programs and difference in hardware, we would expect to see some variance in the ratings of the computers. At the same time, as these programs are playing against regular human beings (and not grand masters) we expect that their mean rating will be higher than that of humans. \\
+
+
 
 To explore the ratings of the players on FICS, the finger statistics were downloaded and transformed into a CSV format as described in section~\ref{sec:pstats}. This was done separately for human players and computer programs. On plotting the histogram of the human ratings, for blitz games, we observe that the ratings have normal distribution (Figure \ref{fig:humanrating}). With the mean $\bar{x}_{hr} = 1339.560$ and standard deviation $\sigma_{hr} = 293.12$\footnote{The author's own rating is below average at 1084}.\\
 
@@ -154,7 +158,6 @@ To explore the ratings of the players on FICS, the finger statistics were downlo
 \end{figure}
 
 
-The computer accounts which are present on the FICS server run chess programs. These programs are either commercially available programs like Fritz~\cite{web:fritz}, or are open source, like Crafty~\cite{web:crafty} or mscp~\cite{web:mscp}. Apart from the kind of program running, the computers running them differ in hardware. The hardware's capabilities also influence the chess program's strength. With faster hardware we would expect the program to be able to search deeper in the tree. Due to these two factors, namely difference in programs and difference in hardware, we would expect to see some variance in the ratings of the computers. At the same time, as these programs are playing against regular human beings (and not grand masters) we expect that their mean rating will be higher than that of humans. \\
 
 The list of computers operating on the FICS server was available readily. The same procedure was applied to obtain their statistics. The computer blitz ratings histogram differ significantly from the human ratings. We see in Figure \ref{fig:comprating} that the computer ratings do not seem to follow a normal distribution. Most computers are rated higher than 2000. To compare this against humans, $79.6\%$ of computers are rated above 2000, whereas only $1.44\%$ of humans cross that level. The mean rating for computers is $\bar{x}_{cr} = 2254.479$ with standard deviation $\sigma_{cr} = 426.53$. One thing to note though is that the number of active computer players is far less than human players.\\
 
@@ -175,7 +178,7 @@ A related statistic is the number of games a particular user has played. One cou
 
 
 
-One might postulate that a human player's rating is correlated to the number of games she has played. With the assumption that a player will learn and improve over time. This though is found to be not true. If we plot the player's rating against her ratings deviation (which is a measure of the how frequently a user plays games and the accuracy of her rating) and the total number of games played, we find that there is no such correlation (Figure~\ref{fig:ratingsrdtotal}).\\
+One might think that a human player's rating is correlated to the number of games she has played. With the assumption that a player will learn and improve over time. This though was found not to be true. If we plot the player's rating against her ratings deviation (which is a measure of the how frequently a user plays games and the accuracy of her rating) and the total number of games played, we find that there is no such correlation (Figure~\ref{fig:ratingsrdtotal}).\\
 
 \begin{figure} [htp]
 \begin{center}
@@ -228,7 +231,7 @@ Another thing which can be noticed is that most computers have totals below 200,
 
 \clearpage
 \subsection{Opening Strategies}
-The initial moves played in a chess game constitute of what is known as the ``Opening'' of a game. There are various opening strategies each with its strength and weaknesses. Although the first move is played by White, the opening relies open Black's response.\\
+The initial moves played in a chess game constitute of what is known as the ``Opening'' of a game. There are various opening strategies each with its strength and weaknesses. Although the first move is played by White, the opening relies on Black's response.\\
 
 The standard way of categorizing chess openings is to use Encyclopaedia of Chess Openings or ECO codes. The ECO codes are categoriezed into five sub-divisions labeled from ``A'' to ``E''. Each sub-division in turn has 100 sub-categories~\cite{wiki:eco}.\\
 
@@ -242,7 +245,7 @@ In all of the games played on FICS, these ECO codes are recorded in the PGN file
 \label{fig:ecobar}
 \end{figure}
 
-Surprisingly the most popular opening is the A00 opening. A00 is the ``uncommon opening'' , which as the name suggests should be ``uncommon'' but is in fact the most common. The 2nd opening, B01 is the Scandinavian opening and starts with the {\bf 1. e4 d5} (white moves the King's pawn two steps, to which Black counters by moving her Queen's pawn two steps). The bar plot of course shows openings across all ratings. On changing the ratings and plotting we would expect to see a difference in the frequency of the ratings. This is found to be true as seen in Figure~\ref{fig:ecobarcomp}
+Surprisingly the most popular opening is the A00 opening. A00 is the ``uncommon opening'' , which as the name suggests should be ``uncommon'' but is in fact the most common. The 2nd opening, B01 is the Scandinavian opening and starts with the {\bf 1. e4 d5} (white moves the King's pawn two steps, to which Black counters by moving her Queen's pawn two steps). The bar plot in Figure~\ref{fig:ecobar} shows openings across all ratings. On changing the ratings and plotting we would expect to see a difference in the frequency of the ratings. This is found to be true as seen in Figure~\ref{fig:ecobarcomp}
 
 \begin{figure} [htp]
 \begin{center}
@@ -254,7 +257,7 @@ Surprisingly the most popular opening is the A00 opening. A00 is the ``uncommon 
 
 
 \subsection{Frequent Pattern Mining}
-Pattern Mining deals with finding interesting patterns in an itemset. This includes finding associations, sequences, clusters, etc. Finding out association rules was first used in the analysis of market transactions. It was first presented in 1993 by Agrawal~\cite{paper:agrawal}. The basics of pattern mining with specific focus on association rules is presented in the following sub-section.
+Pattern Mining deals with finding interesting patterns in an itemset. This includes finding associations, sequences, clusters, etc. Finding out association rules was first used in the analysis of market transactions. It was first presented in 1993 by Agrawal~\cite{paper:agrawal}. The basics of pattern mining with specific focus on association rules are presented in the following sub-section.
 
 
 \subsubsection{Definitions}
@@ -317,7 +320,7 @@ For a more thorough discussion on itemset and association rule mining please see
 
 \subsubsection{Association Mining in R}
 
-The packages {\sl arules}~\cite{r:arules} and {\sl arulesSequences}~\cite{r:arulesseq} are two libraries which can be used for itemset and association mining in R. They can be installed using the standard \verb=install.packages= command. These packages required R 2.11 or greater.\\
+The packages {\sl arules}~\cite{r:arules} and {\sl arulesSequences}~\cite{r:arulesseq} are two libraries which can be used for itemset and association mining in R. They can be installed using the standard \verb=install.packages= command. These packages require R 2.11 or greater.\\
 
 The {\sl arules} package provides functions to read in transactions
 and perform association mining using a number of algorithms, like
@@ -355,7 +358,7 @@ the following reasons.
 \end{enumerate}
 
 \subsection{Weeding out Cheaters}
-As mentioned before the FICS chess server hosts many chess programs. Many of these programs are hobby projects and aren't highly rated. Amongst these there are computers which do not {\sl learn} from their previous games. Thus it is possible for a human player to exploit a particular weakness in a computer's game by playing the same moves from a previously won game. By doing this, the human can easily increase her rating. The server policy explicitly states that \cite{web:ficspolicy}
+As mentioned before the FICS chess server hosts many computer chess programs. Many of these programs are hobby projects and aren't highly rated. Amongst these there are computers which do not {\sl learn} from their previous games. Thus it is possible for a human player to exploit a particular weakness in a computer's game by playing the same moves from a previously won game. By doing this, the human can easily increase her rating. The server policy explicitly states that \cite{web:ficspolicy}
 \begin{quote}
 {\sl 13. It is against server policy, when playing against computer accounts, to play the same line repeatedly (e.g. to inflate your rating).}
 \end{quote}
@@ -423,7 +426,7 @@ There were similar repeated move sequences found when {\sl inemuri} played black
 
 \section{Conclusion and Lessons Learnt}
 
-Mining the chess game database was an enjoyable exercise. There were many thing which the were discovered which weren't evident at the onset. A major portion of the time was spent in trying to acquire the data and cleanse it. One such challenge was in acquiring the player statistics data. The initial method to obtain player statistics used the FICS website. A script would run in a loop and repeatedly query the website for the statistics, which would then be downloaded. This method though generated a lot of requests. In response, the server administrators blocked my IP address from accessing the web page, thinking it was a DoS attack. On contacting the server administrators, they suggested that a better way would be to make the script directly telnet to the server and then download the data. \\
+Mining the chess game database was an enjoyable exercise. There were many thing which the were discovered which weren't evident at the onset. A major portion of the time was spent in trying to obtain the data and cleanse it. One such challenge was in acquiring the player statistics data. The initial method to obtain player statistics used the FICS website. A script would run in a loop and repeatedly query the website for the statistics, which would then be downloaded. This method though generated a lot of requests. In response, the server administrators blocked the author's IP address from accessing the web page, thinking it was a DoS attack. On contacting the server administrators, they suggested that a better way would be to make the script directly telnet to the server and then download the data. \\
 
 R was found to be a powerful tool. Learning parts of it though is hard.  When searching through Google many times the search engine would just drop the term ``R'' and search for the rest of the keywords.\\ 
 
