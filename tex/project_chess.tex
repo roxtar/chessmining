@@ -25,7 +25,7 @@ The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} mainta
 
 As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers.\\
 
-This report describes the data made available for these games, a set of analyses done and the results. Section~\ref{sec:datacol} discusses how the data was collected, cleansed and parsed to make it suitable for analysis. Section~\ref{sec:analysis} describes the various analyses which were done on the data. This includes looking at the ratings distributions, correlation between game totals, frequency analysis of opening strategies and finally a use of frequent pattern mining techniques to find abusers on the server. Section~\ref{sec:conc} presents the a summary of the results achieved and the lessons learnt along the way. Finally Appendix ~\ref{sec:src} gives a description of the source code developed for this project and how it can be obtained.
+This report describes the data made available for these games, a set of analyses done and the results. Section~\ref{sec:datacol} discusses how the data was collected, cleansed and parsed to make it suitable for analysis. Section~\ref{sec:analysis} describes the various analyses which were done on the data. This includes looking at the ratings distributions, correlation between game totals, frequency analysis of opening strategies and finally a use of frequent pattern mining techniques to find abusers on the server. Section~\ref{sec:conc} presents the a summary of the results achieved and the lessons learnt along the way. Finally Appendix ~\ref{sec:src} gives a description of the source code developed for this project and how the source code and the data-set can be obtained.
 
 \section{Data Collection}
 \label{sec:datacol}
@@ -220,9 +220,46 @@ Total & 0.24 & -0.37 & 0.97 & 0.97 & 0.92 & 1.00\\
 
 
 
-This is confirmed when we see the correlation matrix for the player statistics in Table~\ref{tab:playercor}. We can see that in the row for ``Rating'' almost all columns are below 0.4 and above 0.1. We see strong correlation between the ``Total'' and the ``Won'', ``Lost'' and ``Drawn'' columns, but that's expected because ``Total'' is the sum of those three columns. What's interesting though is the ``Won'' row, where we find that the number of wins is strongly correlated to the number of ``Lost'' and ``Drawn'' games. This suggests that there might be a relationship between these three attributes \\
+This is confirmed when we see the correlation matrix for the player statistics in Table~\ref{tab:playercor}. We can see that in the row for ``Rating'' almost all columns are below 0.4 and above 0.1. We see strong correlation between the ``Total'' and the ``Won'', ``Lost'' and ``Drawn'' columns, but that's expected because ``Total'' is the sum of those three columns. What's interesting though is the ``Won'' row, where we find that the number of wins is strongly correlated to the number of ``Lost'' and ``Drawn'' games. This suggests that there might be a relationship between these three attributes. On drawing a ``pairs'' plot the points seem to have a linear relationship (Figure~\ref{fig:wonlostdrawn})\\
 
 
+\begin{figure} [htp]
+\begin{center}
+\includegraphics[width=3in]{won_lost_drawn_pairs.png}
+\end{center}
+\caption{Pairs Plot for Games Won, Lost and Drawn}
+\label{fig:wonlostdrawn}
+\end{figure}
+
+On building a linear model for these three attributes, we obtained the following coefficients.
+
+\begin{figure}[htp]
+\begin{verbatim}
+> summary(model)
+
+Call:
+lm(formula = BlitzWon ~ BlitzLost + BlitzDrawn, data = humans)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-24202.0   -440.1   -218.5    233.3  26336.0 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 2.787e+02  2.721e+01   10.24   <2e-16 ***
+BlitzLost   4.707e-01  9.739e-03   48.33   <2e-16 ***
+BlitzDrawn  5.049e+00  9.868e-02   51.17   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+Residual standard error: 1821 on 7074 degrees of freedom
+Multiple R-squared: 0.8498,	Adjusted R-squared: 0.8497 
+F-statistic: 2.001e+04 on 2 and 7074 DF,  p-value: < 2.2e-16 
+
+
+\end{verbatim}
+\caption{Linear Model for Games Won, Lost and Drawn}
+\end{figure}
 
 Another thing which can be noticed is that most computers have totals below 200,000 games, whereas for humans this number is 60,000. We considered points above these numbers as outliers and plotted the histogram for the totals. We find that the distribution for humans follows a power law (Figure~\ref{fig:totalsdistr}). The distribution for the computers though is not as beautiful (Figure~\ref{fig:totalsdistr}).\\
 
@@ -465,6 +502,8 @@ Directory & Description \\
 \end{table}
 
 Running the \verb=make= command while within the \verb=humans= and \verb=computers= directories will generate all the CSV data from the raw data. It will also invoke the script which fetches the player statistics data from the FICS server and may take some time.\\
+
+The PGN files which were used in the project were downloaded from the FICS games website: \url{http://www.ficsgames.com/}.
 
 \pagebreak
 \bibliography{project_chess}

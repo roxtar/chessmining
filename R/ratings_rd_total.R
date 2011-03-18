@@ -14,4 +14,8 @@ legend("topright", pch=c(20,20), col=c("red", "gray"), legend=c("Rating > 1500",
 par(opar)
 
 ## print correlation matrix
-print(round(cor(humans[, 2:7]), 2)
+print(round(cor(humans[, 2:7]), 2))
+pairs(humans[4:6], col="blue", pch=20)
+lm(formula = BlitzWon ~ BlitzLost + BlitzDrawn, data = humans)
+
+      
