@@ -13,7 +13,7 @@ urlcolor=blue,
 }
 
 \author{Rohit Kumar \\UCLA ID: 203884129}
-\title{Data Mining Chess Games \\ CS 249: Term Project, Winter 2011}
+\title{An Analysis of Chess Games on The Free Internet Chess Server \\ CS 249: Term Project, Winter 2011}
 \begin{document}
 
 \maketitle
@@ -23,9 +23,12 @@ urlcolor=blue,
 \label{sec:intro}
 The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} maintains an extensive set of chess games in its database. The data set contains games from 1999 to 2011 and includes players of all kinds of ratings -- from the very beginner, to grand masters, to computers. Apart from the traditional chess games, people also play chess variants on the server. For example: suicide chess, losers, crazyhouse etc. The data for each game is captured as a Portable Game Notation (PGN) \cite{wiki:pgn} file and contains information regarding the moves played, the players names, their rating, time controls used and the result. \\
 
-As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers. This project aims at finding interesting patterns in the FICS chess data set.
+As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers.\\
+
+This report describes the data made available for these games. Section~\ref{sec:datacol} discusses how the data was collected, cleansed and parsed to make it suitable for analysis. Section~\ref{sec:analysis} describes the various analyses which were done on the data. This includes looking at the ratings distributions, correlation between game totals, frequency analysis of opening strategies and finally a use of frequent pattern mining techniques to find abusers on the server. Section~\ref{sec:conc} presents the a summary of the results achieved and the lessons learnt along the way. Finally Appendix~\ref{sec:src} gives a description of the source code developed for this project and how it can be obtained.
 
 \section{Data Collection}
+\label{sec:datacol}
 
 \subsection{PGN Parser}
 
@@ -127,9 +130,11 @@ The FICS website or server doesn't provide a means to extract a list of all user
 
 To execute the \verb=finger= command on the server a Perl script was written, which would telnet to the FICS server, run the command and return the output. The output was then filtered to obtain the player statistics in CSV format. \\
 
+Retrieving the data and filtering required a combination of Python, Perl, and shell scripts. The PGN format was studied to build a parser and extract meaningful information. As each of the PGN database files were 10 MB in size, only a few of all the available dataset was downloaded. The subsequent sections discuss the data extracted from these PGN files and analyses performed on them.
+
 
 \section{Data Analysis}
-
+\label{sec:analysis}
 \subsection{Exploring Ratings}
 The FICS server has got a rating system based on the Glicko system~\cite{spec:glicko}. Each player has a rating which is a number ranging between 600-3000. The higher the rating, the better the player. The Glicko rating system has another factor called \textsl{Ratings Deviation(RD)}, which measures the accuracy of the rating. The lower the Ratings Deviation (RD), the more accurate is the rating of the player.\\
 
@@ -425,6 +430,7 @@ Rd3, Bxd3+  {White resigns} 0-1
 There were similar repeated move sequences found when {\sl inemuri} played black. For {\sl mscp} and {\sl IFDThor} we were unable to find such moves and that could be one reason why both those programs are rated higher than {\sl inemuri} \footnote{mscp: 1636, IFDThor: 1638, Inemuri: 1337}.
 
 \section{Conclusion and Lessons Learnt}
+\label{sec:conc}
 
 Mining the chess game database was an enjoyable exercise. There were many thing which the were discovered which weren't evident at the onset. A major portion of the time was spent in trying to obtain the data and cleanse it. One such challenge was in acquiring the player statistics data. The initial method to obtain player statistics used the FICS website. A script would run in a loop and repeatedly query the website for the statistics, which would then be downloaded. This method though generated a lot of requests. In response, the server administrators blocked the author's IP address from accessing the web page, thinking it was a DoS attack. On contacting the server administrators, they suggested that a better way would be to make the script directly telnet to the server and then download the data. \\
 
@@ -432,8 +438,8 @@ R was found to be a powerful tool. Learning parts of it though is hard.  When se
 
 Many of the techniques which were taught in the course: SVD, PCA, Modeling and Classifiers could have been applied to the data, but no strong justification was found to apply them. But on the other hand, this led me to learn frequent pattern mining which did find application.
 
-\pagebreak
-\section{Appendix A: Source Code}
+\section*{Appendix A: Source Code}
+\label{sec:src}
 The source code for this project is available at \url{http://github.com/roxtar/chessmining/}. The contents of each directory are described in Table~\ref{tab:src}.\\
 \begin{table}[htp]
 \begin{center}
