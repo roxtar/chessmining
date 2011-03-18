@@ -25,7 +25,7 @@ The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} mainta
 
 As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers.\\
 
-This report describes the data made available for these games. Section~\ref{sec:datacol} discusses how the data was collected, cleansed and parsed to make it suitable for analysis. Section~\ref{sec:analysis} describes the various analyses which were done on the data. This includes looking at the ratings distributions, correlation between game totals, frequency analysis of opening strategies and finally a use of frequent pattern mining techniques to find abusers on the server. Section~\ref{sec:conc} presents the a summary of the results achieved and the lessons learnt along the way. Finally Appendix~\ref{sec:src} gives a description of the source code developed for this project and how it can be obtained.
+This report describes the data made available for these games, a set of analyses done and the results. Section~\ref{sec:datacol} discusses how the data was collected, cleansed and parsed to make it suitable for analysis. Section~\ref{sec:analysis} describes the various analyses which were done on the data. This includes looking at the ratings distributions, correlation between game totals, frequency analysis of opening strategies and finally a use of frequent pattern mining techniques to find abusers on the server. Section~\ref{sec:conc} presents the a summary of the results achieved and the lessons learnt along the way. Finally Appendix ~\ref{sec:src} gives a description of the source code developed for this project and how it can be obtained.
 
 \section{Data Collection}
 \label{sec:datacol}
@@ -138,7 +138,7 @@ Retrieving the data and filtering required a combination of Python, Perl, and sh
 \subsection{Exploring Ratings}
 The FICS server has got a rating system based on the Glicko system~\cite{spec:glicko}. Each player has a rating which is a number ranging between 600-3000. The higher the rating, the better the player. The Glicko rating system has another factor called \textsl{Ratings Deviation(RD)}, which measures the accuracy of the rating. The lower the Ratings Deviation (RD), the more accurate is the rating of the player.\\
 
-In addition to this, the FICS server allows to users to play at a pace of their own choice. This leads to three varieties of time controls in regular chess: lightning, blitz and standard. Lighting being the fastest, with games finishing in under 6 minutes total, and standard being the slowest. For each of these different time controls, the user has different ratings, i.e a user's blitz rating will not be influenced by any of the lightning games which she plays and vice-versa.Time controls which fall under the blitz category are the most popular.\\
+In addition to this, the FICS server allows to users to play at a pace of their own choice. This leads to three varieties of time controls in regular chess: lightning, blitz and standard. Lighting being the fastest, with games finishing in under 6 minutes total, and standard being the slowest. For each of these different time controls, the user has different ratings, i.e a user's blitz rating will not be influenced by any of the lightning games which she plays and vice-versa.Time controls which fall under the blitz category are the most popular. Only Blitz games were analyzed\\
 
 \begin{figure} [htp]
 \begin{center}
@@ -164,13 +164,13 @@ To explore the ratings of the players on FICS, the finger statistics were downlo
 
 
 
-The list of computers operating on the FICS server was available readily. The same procedure was applied to obtain their statistics. The computer blitz ratings histogram differ significantly from the human ratings. We see in Figure \ref{fig:comprating} that the computer ratings do not seem to follow a normal distribution. Most computers are rated higher than 2000. To compare this against humans, $79.6\%$ of computers are rated above 2000, whereas only $1.44\%$ of humans cross that level. The mean rating for computers is $\bar{x}_{cr} = 2254.479$ with standard deviation $\sigma_{cr} = 426.53$. One thing to note though is that the number of active computer players is far less than human players.\\
+The list of computers operating on the FICS server was available through one of the FICS commands: \verb=help computer_list=. The same telnet script, which was used to download the statistics for humans, was used to obtain the statistics for computers. The computer blitz ratings histogram differ significantly from the human ratings. We see in Figure \ref{fig:comprating} that the computer ratings do not seem to follow a normal distribution. Most computers are rated higher than 2000. To compare this against humans, $79.6\%$ of computers are rated above 2000, whereas only $1.44\%$ of humans cross that level. The mean rating for computers is $\bar{x}_{cr} = 2254.479$ with standard deviation $\sigma_{cr} = 426.53$. One thing to note though is that the number of active computer players is far less than human players.\\
 
 
 
 \subsection{Game Totals}
 
-A related statistic is the number of games a particular user has played. One could conjecture that human players would have played lesser number of games as compared to the computers on the server. The totals for the blitz games played, were plotted for humans and computers (Figure~\ref{fig:gametotals}). The computer which has played the highest number of blitz games is {\sl mscp(C)} and the human is a user named {\sl gianti}. What's surprising is that {\sl mscp(C)} has played over 1 million games, which is 10 times the number of games which {\sl gianti} has played.\\
+A related statistic is the number of games a particular user has played. One could conjecture that human players would have played lesser number of games as compared to the computers on the server, as the computer programs play on the server all throughout the day unlike humans. The totals for the blitz games played, were plotted for humans and computers (Figure~\ref{fig:gametotals}). The computer which has played the highest number of blitz games is {\sl mscp(C)} and the human is a user named {\sl gianti}. What's surprising is that {\sl mscp(C)} has played over 1 million games, which is 10 times the number of games which {\sl gianti} has played.\\
 
 
 \begin{figure} [htp]
@@ -220,7 +220,7 @@ Total & 0.24 & -0.37 & 0.97 & 0.97 & 0.92 & 1.00\\
 
 
 
-This is confirmed when we see the correlation matrix for the player statistics in Table~\ref{tab:playercor}. We can see that in the row for ``Rating'' almost all columns are below 0.4 and above 0.1. We see strong correlation between the ``Total'' and the ``Won'', ``Lost'' and ``Drawn'' columns, but that's expected because ``Total'' is the sum of those three columns. What's interesting though is the ``Won'' row, where we find that the number of wins is strongly correlated to the number of ``Lost'' and ``Drawn'' games. \\
+This is confirmed when we see the correlation matrix for the player statistics in Table~\ref{tab:playercor}. We can see that in the row for ``Rating'' almost all columns are below 0.4 and above 0.1. We see strong correlation between the ``Total'' and the ``Won'', ``Lost'' and ``Drawn'' columns, but that's expected because ``Total'' is the sum of those three columns. What's interesting though is the ``Won'' row, where we find that the number of wins is strongly correlated to the number of ``Lost'' and ``Drawn'' games. This suggests that there might be a relationship between these three attributes \\
 
 
 
@@ -438,7 +438,10 @@ R was found to be a powerful tool. Learning parts of it though is hard.  When se
 
 Many of the techniques which were taught in the course: SVD, PCA, Modeling and Classifiers could have been applied to the data, but no strong justification was found to apply them. But on the other hand, this led me to learn frequent pattern mining which did find application.
 
-\section*{Appendix A: Source Code}
+\pagebreak
+\appendix
+\section{Appendix}
+\subsection{Source Code}
 \label{sec:src}
 The source code for this project is available at \url{http://github.com/roxtar/chessmining/}. The contents of each directory are described in Table~\ref{tab:src}.\\
 \begin{table}[htp]
