@@ -23,9 +23,12 @@ urlcolor=blue,
 \label{sec:intro}
 The Free Internet Chess Server (FICS) \footnote{http://www.freechess.org} maintains an extensive set of chess games in its database. The data set contains games from 1999 to 2011 and includes players of all kinds of ratings -- from the very beginner, to grand masters, to computers. Apart from the traditional chess games, people also play chess variants on the server. For example: suicide chess, losers, crazyhouse etc. The data for each game is captured as a Portable Game Notation (PGN) \cite{wiki:pgn} file and contains information regarding the moves played, the players names, their rating, time controls used and the result. \\
 
-As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 computers.\\
+As of this writing the FICS chess database contains game records for over 130,000,000 chess games, played by over 300,000 humans and 1,400 chess programs (computers).\\
 
-This report describes the data made available for these games, a set of analyses done and the results. Section~\ref{sec:datacol} discusses how the data was collected, cleansed and parsed to make it suitable for analysis. Section~\ref{sec:analysis} describes the various analyses which were done on the data. This includes looking at the ratings distributions, correlation between game totals, frequency analysis of opening strategies and finally a use of frequent pattern mining techniques to find abusers on the server. Section~\ref{sec:conc} presents the a summary of the results achieved and the lessons learnt along the way. Finally Appendix ~\ref{sec:src} gives a description of the source code developed for this project and how the source code and the data-set can be obtained.
+This report describes the data made available for these games, a set of analyses done and the results. Section~\ref{sec:datacol} discusses how the data was collected, cleansed and parsed to make it suitable for analysis. Section~\ref{sec:analysis} describes the various analyses which were done on the data. This includes looking at the ratings distributions, correlation between game totals, frequency analysis of opening strategies and finally a use of frequent pattern mining techniques to find abusers on the server. Section~\ref{sec:conc} presents the a summary of the results achieved and the lessons learnt along the way. Finally Appendix ~\ref{sec:src} gives a description of the source code developed for this project and how the source code and the data-set can be obtained.\\
+
+
+\noindent {\sl \bf{Note:}} This report uses the FICS terminology to refer to chess programs as ``computers.''
 
 \section{Data Collection}
 \label{sec:datacol}
@@ -273,7 +276,7 @@ Another thing which can be noticed is that most computers have totals below 200,
 
 \clearpage
 \subsection{Opening Strategies}
-The initial moves played in a chess game constitute of what is known as the ``Opening'' of a game. There are various opening strategies each with its strength and weaknesses. Although the first move is played by White, the opening relies on Black's response.\\
+The initial moves played in a chess game constitute of what is known as the ``Opening'' of a game. There are various opening strategies each with its strength and weaknesses. Although the first move is played by White, the opening relies on Black's response. A chess opening strategy consists of the entire group of initial moves of a game. There are many different openings and variants of those.\\
 
 The standard way of categorizing chess openings is to use Encyclopaedia of Chess Openings or ECO codes. The ECO codes are categoriezed into five sub-divisions labeled from ``A'' to ``E''. Each sub-division in turn has 100 sub-categories~\cite{wiki:eco}.\\
 
@@ -287,7 +290,7 @@ In all of the games played on FICS, these ECO codes are recorded in the PGN file
 \label{fig:ecobar}
 \end{figure}
 
-Surprisingly the most popular opening is the A00 opening. A00 is the ``uncommon opening'' , which as the name suggests should be ``uncommon'' but is in fact the most common. The 2nd opening, B01 is the Scandinavian opening and starts with the {\bf 1. e4 d5} (white moves the King's pawn two steps, to which Black counters by moving her Queen's pawn two steps). The bar plot in Figure~\ref{fig:ecobar} shows openings across all ratings. On changing the ratings and plotting we would expect to see a difference in the frequency of the ratings. This is found to be true as seen in Figure~\ref{fig:ecobarcomp}
+Surprisingly the most popular opening is the A00 opening. A00 is the ``uncommon opening'' , which as the name suggests should be ``uncommon'' but is in fact the most common. The 2nd opening, B01 is the Scandinavian opening and starts with the {\bf 1. e4 d5} (white moves the King's pawn two steps, to which Black counters by moving her Queen's pawn two steps). The bar plot in Figure~\ref{fig:ecobar} shows openings across all ratings. On changing the ratings and plotting we would expect to see a difference in the frequency of the ratings. This is found to be true as seen in Figure~\ref{fig:ecobarcomp}. Where we can see that amongst the top five opening strategies of players above rating 1800 (left side) and players below 1300 (right side), three are shared whereas the rest are not.  
 
 \begin{figure} [htp]
 \begin{center}
@@ -317,7 +320,7 @@ The {\sl support} of an itemset $X$ in $D$ is the number of transactions in the 
 
 \[support(X, D) := |cover(X,D)|.\]
 
-An itemset is called {\sl frequent} if its support is no less than a given absolute {\sl minimal support threshold $\sigma_{abs}$}, with  $0 \le \sigma_{abs} \le |D|$.
+An itemset is called {\sl frequent} if its support is no less than a given absolute {\sl minimal support threshold $\sigma_{abs}$}, with  $0 \le \sigma_{abs} \le |D|$.\\
 
 {\bf Definition 1.} Let $D$ be a transaction database over a set of items $I$, and $\sigma$ a minimal support threshold. The collection of frequent itemsets in $D$ with respect to $\sigma$ is denoted by: 
 
@@ -407,7 +410,7 @@ As mentioned before the FICS chess server hosts many computer chess programs. Ma
 
 Despite that, there is no strict checking in place to find humans who do this. Using pattern mining techniques, we could find if such cheaters exist.\\
 
-If someone is inflating their rating by playing similar moves repeatedly, we would expect such moves to have low support, but  high confidence values. We assume that in most games against computers humans don't cheat, but people who cheat, do so repeatedly. \\
+We assume that in most games against computers humans don't cheat, but people who cheat, do so repeatedly. If someone is inflating their rating by playing similar moves repeatedly, we would expect such moves to have low support, but  high confidence values. That is we are looking for repeating patterns, but which don'toccur that often in all the games which the computer plays.\\
 
 The last 10000 games of three computer programs were downloaded. These programs were {\sl mscp, inemuri and IFDThor}. They are the top three amongst the computers which have played the most number of games. Half the games consisted of plays where the computer was playing White and the other half Black. The game database PGN files were parsed and the moves were extracted into a CSV file format which would be understandable by the \verb=read.transactions= function. Each game was listed as a sequence of comma separated moves on each line of the file. The first item on each line is the game ID (Figure~\ref{fig:movecsv}).\\
 
@@ -464,16 +467,18 @@ Rd3, Bxd3+  {White resigns} 0-1
 \end{verbatim}
 \end{quote}
 
-There were similar repeated move sequences found when {\sl inemuri} played black. For {\sl mscp} and {\sl IFDThor} we were unable to find such moves and that could be one reason why both those programs are rated higher than {\sl inemuri} \footnote{mscp: 1636, IFDThor: 1638, Inemuri: 1337}.
+There were similar repeated move sequences found when {\sl inemuri} played black. For {\sl mscp} and {\sl IFDThor} we were unable to find such moves and that could be one reason why both those programs are rated higher than {\sl inemuri} \footnote{mscp: 1636, IFDThor: 1638, Inemuri: 1337}. This showed that there were incidents where humans cheated by playing the same winning moves repeatedly against computer chess programs. The computers were rated lower than the average human rating. The humans using such methods were able to boost their rating.
 
 \section{Conclusion and Lessons Learnt}
 \label{sec:conc}
 
 Mining the chess game database was an enjoyable exercise. There were many thing which the were discovered which weren't evident at the onset. A major portion of the time was spent in trying to obtain the data and cleanse it. One such challenge was in acquiring the player statistics data. The initial method to obtain player statistics used the FICS website. A script would run in a loop and repeatedly query the website for the statistics, which would then be downloaded. This method though generated a lot of requests. In response, the server administrators blocked the author's IP address from accessing the web page, thinking it was a DoS attack. On contacting the server administrators, they suggested that a better way would be to make the script directly telnet to the server and then download the data. \\
 
-R was found to be a powerful tool. Learning parts of it though is hard.  When searching through Google many times the search engine would just drop the term ``R'' and search for the rest of the keywords.\\ 
+The analysis of the data led to the discovery of many interesting patterns. For example, the normal distribution in the rating of human players, the power law in total number of games played and the linear relationship between games won and games lost/drawn. Finally, the application of frequent pattern mining techniques led to the discovery of cheaters on the FICS server. Some of these cheaters were reported to the server administrators and were eventually banned.\\
 
-Many of the techniques which were taught in the course: SVD, PCA, Modeling and Classifiers could have been applied to the data, but no strong justification was found to apply them. But on the other hand, this led me to learn frequent pattern mining which did find application.
+There could be more patterns which could be discovered. For example, an analysis of games over time could be done. There are also opportunities to see if modeling techniques could be applied to predict moves of certain human or computer players. \\
+
+Chess remains an interesting game with a vast problem space. Having openly available data sets like the FICS game database let's us explore this pattern space and make discoveries. And data mining techniques are excellent tools to make such discoveries.\\
 
 \pagebreak
 \appendix
@@ -502,6 +507,8 @@ Directory & Description \\
 \end{table}
 
 Running the \verb=make= command while within the \verb=humans= and \verb=computers= directories will generate all the CSV data from the raw data. It will also invoke the script which fetches the player statistics data from the FICS server and may take some time.\\
+
+All source code is licensed under GPL.\\
 
 The PGN files which were used in the project were downloaded from the FICS games website: \url{http://www.ficsgames.com/}.
 
